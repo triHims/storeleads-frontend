@@ -1,0 +1,15 @@
+.gptBG {
+    background: #343541;
+}
+
+.bottomHint {
+    font-size: 0.75em;
+}
+.bottomHint__invalid {
+    font-size: 0.75em;
+    color: #ff0018;
+}
+.bottomHint__valid {
+    font-size: 0.75em;
+    color: #61fd61;
+}
