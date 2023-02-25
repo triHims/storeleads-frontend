@@ -12,6 +12,7 @@ import { emailApi, processError, ErrorOb } from "../../servicecalls/serviceApi";
 import { EmailDAO } from "../../servicecalls";
 import { useEffect, useRef, useState } from "react";
 import { ValidateEmail } from "../../utils/HelperFunctions";
+import AutoModalNormal from "../../sharedComponents/AutoModalNormal";
 
 const tableFontColor = {
   color: "black",
@@ -90,29 +91,16 @@ const EditMailView = () => {
   const [emailInput, bindEmailInput, resetEmailInput] = useInput("");
   const [modalActive, setModalActive] = useState(false);
   const [shouldRefreshEmailView, setShouldRefershEmailView] = useState(0);
-  const showModal = () => {
-    setModalActive(true);
-    const modalEle = modalRef.current;
-    const previewModalHandle = new Modal(modalEle, {
-      backdrop: "static",
-    });
-
-    previewModalHandle.show();
-  };
-  const hideModal = () => {
-    resetEmailInput("");
-    const modalEle = modalRef.current;
-    const bsModal = Modal.getInstance(modalEle);
-    bsModal.hide();
-    setModalActive(false);
-  };
 
   useEffect(() => {
     let timeOutHandle = setTimeout(() => {
       setLabelEmailVerify({ hint: ReactiveLabelEnum.default, message: "" });
       if (emailInput) {
         if (!ValidateEmail(emailInput)) {
-          setLabelEmailVerify({ hint: ReactiveLabelEnum.error, message: "Email is invalid" });
+          setLabelEmailVerify({
+            hint: ReactiveLabelEnum.error,
+            message: "Email is invalid",
+          });
         }
       }
     }, 500);
@@ -145,68 +133,57 @@ const EditMailView = () => {
     setShouldRefershEmailView((old) => old + 1);
   };
 
+  const viewHeader = (
+    <h5 className="modal-title" id="exampleModalLabel" style={tableFontColor}>
+      Edit Emails
+    </h5>
+  );
+
   return (
     <>
-      <div className="container" onClick={showModal}>
+      <div className="container" onClick={() => setModalActive(true)}>
         <b>Edit Emails</b>
         <span className="float-end me-2">
           <MdMarkEmailRead />
         </span>
       </div>
-      <div className="modal fade" tabIndex={-1} ref={modalRef}>
-        <div className="modal-dialog">
-          {modalActive && (
-            <div className="modal-content">
-              <div className="modal-header py-2">
-                <h5
-                  className="modal-title"
-                  id="exampleModalLabel"
-                  style={tableFontColor}
-                >
-                  Edit Emails
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={hideModal}
-                ></button>
-              </div>
-              <div className="modal-body "></div>
-
-              <div className="px-3">
-                <div className="mb-3">
-                  <div className="input-group ">
-                    <input
-                      {...bindEmailInput}
-                      placeholder="email-id"
-                      type="text"
-                      class="form-control"
-                      id="email-input"
-                      aria-describedby="basic-addon3"
-                    />
-                    <button
-                      className="btn btn-primary"
-                      type="button"
-                      id="button-addon2"
-                      disabled={!emailInput || !ValidateEmail(emailInput)}
-                      onClick={createEmail}
-                    >
-                      Add
-                    </button>
-                  </div>
-                  <ReactiveLabel {...labelEmailVerify} />
-                </div>
-                <div className="list-group mt-4 mb-3">
-                  <EmailViewItems
-                    shouldRefresh={shouldRefreshEmailView}
-                    deleteMail={deleteMail}
-                  />
-                </div>
-              </div>
+      <AutoModalNormal
+        modalState={modalActive}
+        setModalState={setModalActive}
+        header={viewHeader}
+      >
+        <div className="px-3">
+          <div className="mb-3">
+            <div className="input-group ">
+              <input
+                {...bindEmailInput}
+                placeholder="email-id"
+                type="text"
+                class="form-control"
+                id="email-input"
+                aria-describedby="basic-addon3"
+              />
+              <button
+                className="btn btn-primary"
+                type="button"
+                id="button-addon2"
+                disabled={!emailInput || !ValidateEmail(emailInput)}
+                onClick={createEmail}
+              >
+                Add
+              </button>
             </div>
-          )}
+            <ReactiveLabel {...labelEmailVerify} />
+          </div>
+          <div className="list-group mt-4 mb-3">
+            <EmailViewItems
+              shouldRefresh={shouldRefreshEmailView}
+              deleteMail={deleteMail}
+            />
+          </div>
         </div>
-      </div>
+      </AutoModalNormal>
+
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useInput } from "../../../hooks/useInput";
 import styles from "../mainscreen.module.css";
 import { fetchDataFromStoreLeadsUrl } from "../../servicecalls/storeleadsapi.js";
@@ -7,6 +7,83 @@ import { ExcelPreviewModal } from "./PreviewModal";
 import { ApolloPreviewModal } from "./ApolloPreviewModal";
 import { jobsApi, processError } from "../../servicecalls/serviceApi";
 import { useLoaderData, useNavigate } from "react-router-dom";
+import AutoModalNormal from "../../sharedComponents/AutoModalNormal";
+import { AiFillDelete } from "react-icons/ai";
+import { TiCancelOutline } from "react-icons/ti";
+import { MainScreenContext } from "../MainScreen";
+
+const tableFontColor = {
+  color: "black",
+};
+
+const redColor = {
+  color: "red",
+};
+async function deleteJob(jobId, setWaiting, successCallBack) {
+  if (!jobId) {
+    alert("JobId is not found");
+    return;
+  }
+  setWaiting?.(true);
+  let response = {};
+  try {
+    response = await jobsApi.deleteJobByIdJobsDelete(jobId);
+    console.log("response");
+    alert("Job is deleted");
+    successCallBack();
+  } catch (e) {
+    console.log(e);
+    let errorRes = processError(e);
+    console.error(errorRes);
+    response = errorRes;
+  }
+}
+const DeleteFlow = ({ showDelete, setShowDelete, jobData }) => {
+  console.log(jobData);
+  const navigate = useNavigate();
+  const [waiting, setWaiting] = useState(false);
+  const header = <span style={tableFontColor}>Delete Job</span>;
+  const { setrefresh } = useContext(MainScreenContext); // Refresh Main Screen
+  const closeAndRefresh = () => {
+    setrefresh();
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
+  };
+  return (
+    <AutoModalNormal
+      modalState={showDelete}
+      setModalState={setShowDelete}
+      header={header}
+    >
+      <div style={tableFontColor}>
+        Do you want to delete the job- <b>{jobData.jobName}</b> ?
+      </div>
+      {!waiting ? (
+        <div className="d-flex flex-row justify-content-end">
+          <button
+            type="button"
+            onClick={() => deleteJob(jobData.id, setWaiting, closeAndRefresh)}
+            className="btn btn-outline-danger py-1 px-2 mx-2"
+          >
+            <AiFillDelete />
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline-secondary py-1 px-2"
+            onClick={() => setShowDelete(false)}
+          >
+            <TiCancelOutline />
+          </button>
+        </div>
+      ) : (
+        <div className="spinner-border text-light" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      )}
+    </AutoModalNormal>
+  );
+};
 
 /**
  * @param {string} jobName
@@ -57,6 +134,7 @@ async function updateJobsData(jobId, jobName, storeLeadsUrl, persona) {
 const CreateNewFlow = ({ editingMode }) => {
   /* react router stuff */
   const jobData = useLoaderData();
+  const { setrefresh } = useContext(MainScreenContext); // Refresh Main Screen
 
   useEffect(() => {
     if (editingMode) {
@@ -73,6 +151,7 @@ const CreateNewFlow = ({ editingMode }) => {
       setPersonaList("");
       setJobName("");
     }
+    setrefresh();
   }, [editingMode]);
 
   /* component stuff */
@@ -87,6 +166,7 @@ const CreateNewFlow = ({ editingMode }) => {
   const [isSavingData, setIsSavingData] = useState(false);
 
   const [labelSaveMessage, setLabelSaveMessage] = useState();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const navigate = useNavigate();
   //Storeleads validation
@@ -192,6 +272,7 @@ const CreateNewFlow = ({ editingMode }) => {
     resetJobName();
     resetStoreLeads();
     resetPersonaList();
+    setrefresh();
   };
   const updateData = async () => {
     setLabelSaveMessage({ hint: "", message: "Updating Job..." });
@@ -220,7 +301,22 @@ const CreateNewFlow = ({ editingMode }) => {
       message: "Job successfully created",
     });
   };
-  const headerName = editingMode ? "Edit Flow" : "Create Flow";
+
+  const headerName = editingMode ? (
+    <>
+      Edit Flow
+      <div
+        style={redColor}
+        className="d-inline-block ms-2 "
+        onClick={() => setShowDeleteModal(true)}
+      >
+        <AiFillDelete />
+      </div>
+    </>
+  ) : (
+    "Create Flow"
+  );
+
   return (
     <div className="d-flex flex-column  align-items-center h-100">
       <div className="mt-4 w-75">
@@ -303,16 +399,6 @@ const CreateNewFlow = ({ editingMode }) => {
                   Update Flow
                 </button>
               )}
-            {editingMode && (
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  disabled={!isSavePossible()}
-                  onClick={saveData}
-                >
-                  Delete Flow
-                </button>
-              ) }
               <button
                 type="button"
                 className="btn btn-warning ms-3"
@@ -327,6 +413,14 @@ const CreateNewFlow = ({ editingMode }) => {
           <ReactiveLabel {...labelSaveMessage} />
         </div>
       </div>
+      {/* hidden element */}
+      {editingMode && (
+        <DeleteFlow
+          showDelete={showDeleteModal}
+          setShowDelete={setShowDeleteModal}
+          jobData={jobData}
+        />
+      )}
     </div>
   );
 };

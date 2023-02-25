@@ -404,6 +404,125 @@ export class ApolloUtlApi extends BaseAPI implements ApolloUtlApiInterface {
 
 
 /**
+ * AuthApi - axios parameter creator
+ * @export
+ */
+export const AuthApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get Items
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getItemsAuthItemsGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/auth/items`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AuthApi - functional programming interface
+ * @export
+ */
+export const AuthApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AuthApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get Items
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getItemsAuthItemsGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getItemsAuthItemsGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * AuthApi - factory interface
+ * @export
+ */
+export const AuthApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AuthApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get Items
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getItemsAuthItemsGet(options?: any): AxiosPromise<any> {
+            return localVarFp.getItemsAuthItemsGet(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AuthApi - interface
+ * @export
+ * @interface AuthApi
+ */
+export interface AuthApiInterface {
+    /**
+     * 
+     * @summary Get Items
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApiInterface
+     */
+    getItemsAuthItemsGet(options?: AxiosRequestConfig): AxiosPromise<any>;
+
+}
+
+/**
+ * AuthApi - object-oriented interface
+ * @export
+ * @class AuthApi
+ * @extends {BaseAPI}
+ */
+export class AuthApi extends BaseAPI implements AuthApiInterface {
+    /**
+     * 
+     * @summary Get Items
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public getItemsAuthItemsGet(options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).getItemsAuthItemsGet(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
  * DefaultApi - axios parameter creator
  * @export
  */
@@ -933,6 +1052,43 @@ export const JobsApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary Delete Job By Id
+         * @param {number} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteJobByIdJobsDelete: async (jobId: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'jobId' is not null or undefined
+            assertParamExists('deleteJobByIdJobsDelete', 'jobId', jobId)
+            const localVarPath = `/jobs`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (jobId !== undefined) {
+                localVarQueryParameter['job_id'] = jobId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Get All Jobs
          * @param {number} [skip] 
          * @param {number} [limit] 
@@ -1111,6 +1267,17 @@ export const JobsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Delete Job By Id
+         * @param {number} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteJobByIdJobsDelete(jobId: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteJobByIdJobsDelete(jobId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Get All Jobs
          * @param {number} [skip] 
          * @param {number} [limit] 
@@ -1177,6 +1344,16 @@ export const JobsApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @summary Delete Job By Id
+         * @param {number} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteJobByIdJobsDelete(jobId: number, options?: any): AxiosPromise<string> {
+            return localVarFp.deleteJobByIdJobsDelete(jobId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get All Jobs
          * @param {number} [skip] 
          * @param {number} [limit] 
@@ -1235,6 +1412,16 @@ export interface JobsApiInterface {
      * @memberof JobsApiInterface
      */
     createJobJobsJobPost(jobsDTO: JobsDTO, options?: AxiosRequestConfig): AxiosPromise<JobsDAO>;
+
+    /**
+     * 
+     * @summary Delete Job By Id
+     * @param {number} jobId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JobsApiInterface
+     */
+    deleteJobByIdJobsDelete(jobId: number, options?: AxiosRequestConfig): AxiosPromise<string>;
 
     /**
      * 
@@ -1297,6 +1484,18 @@ export class JobsApi extends BaseAPI implements JobsApiInterface {
      */
     public createJobJobsJobPost(jobsDTO: JobsDTO, options?: AxiosRequestConfig) {
         return JobsApiFp(this.configuration).createJobJobsJobPost(jobsDTO, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Delete Job By Id
+     * @param {number} jobId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JobsApi
+     */
+    public deleteJobByIdJobsDelete(jobId: number, options?: AxiosRequestConfig) {
+        return JobsApiFp(this.configuration).deleteJobByIdJobsDelete(jobId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

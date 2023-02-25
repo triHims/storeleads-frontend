@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import { jobsApi, processError } from "../../servicecalls/serviceApi";
 import EditMailView from "./EditMailView";
@@ -6,6 +6,7 @@ import styles from "./jobsSideBar.module.css";
 import { FaHistory } from "react-icons/fa";
 import { RiEditBoxLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { MainScreenContext } from "../MainScreen";
 
 async function getAllJobs() {
   let response = [];
@@ -61,9 +62,10 @@ const SideBarData = () => {
   const [jobsList, setJobList] = useState([]);
   let navigate = useNavigate();
 
+  const { refresh } = useContext(MainScreenContext);
   useEffect(() => {
     populateJobs(setJobList, navigate);
-  }, []);
+  }, [refresh]);
 
   return <>{jobsList}</>;
 };
