@@ -1,4 +1,4 @@
-import React, { useRef,useState } from 'react'
+import React, { useRef, useState, useMemo } from 'react'
 import { Modal } from 'bootstrap/dist/js/bootstrap.esm.min'
 import { fetchDataFromStoreLeadsUrl } from '../../servicecalls/storeleadsapi'
 
@@ -8,36 +8,37 @@ const tableFontColor = {
 }
 
 
-const TablePrev = () => {
+const TablePrev = ({ tableModel }) => {
 
+    console.log(tableModel)
+    const tableVals = useMemo(() => {
+        return tableModel?.tableData?.map(element => {
+            return (
+
+                <tr key={element?.title}>
+                    <td scope="col">{element?.title}</td>
+                    <td scope="col">{element?.name}</td>
+                    <td scope="col">{element?.description}</td>
+                    <td scope="col">{element?.country}</td>
+                </tr>
+            )
+        });
+    }, [tableModel])
     return (
         <div className="container">
             <table class="table" style={tableFontColor}>
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Country</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {tableVals}
                     <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>@twitter</td>
+                        <th scope="col" colSpan={4}>Total Number of rows in query {tableModel.totalRows ? tableModel?.totalRows : 0}</th>
                     </tr>
                 </tbody>
             </table>
@@ -46,19 +47,34 @@ const TablePrev = () => {
 }
 
 async function fetchDataFromStoreLeadsUrlAsync(storeleadsUrl) {
-    let data = await fetchDataFromStoreLeadsUrl(storeleadsUrl)
+    let response = await fetchDataFromStoreLeadsUrl(storeleadsUrl, 10)
+    let data = {}
+    data = response?.data
+
     console.log(data)
+    let tableDataArr = data?.data;
+    let totalTableRows = data?.totalSize
+
+    let finalTableData = tableDataArr.map(obj => ({
+        "name": obj.name,
+        "title": obj.title,
+        "country": obj.country_code,
+        "description": obj.description
+
+    }))
+    return { totalTableRows, finalTableData }
 }
 
 
-export const ExcelPreviewModal = ({ storeleadsUrl }) => {
+export const ExcelPreviewModal = ({ storeleadsUrl, isEnabled }) => {
     const modalRef = useRef()
-    const apiData = null;
 
     const [tableModel, setTableModel] = useState({
         tableData: [],
         totalRows: 0
     })
+
+    const [isloading, setIsLoading] = useState(false)
 
     const showModal = () => {
         if (!storeleadsUrl) {
@@ -70,27 +86,14 @@ export const ExcelPreviewModal = ({ storeleadsUrl }) => {
             backdrop: 'static',
         });
 
-        fetchDataFromStoreLeadsUrlAsync(storeleadsUrl)
-            .then(response => {
-                let data = {}
-                console.log(response)
-                data = response?.data
-                let tableDataArr = data?.data;
-                let totalTableRows = data?.totalSize
-
-                let finalTableRows = tableDataArr.map(obj=>({
-                    "name": obj.name,
-                    "title":obj.title,
-                    "country": obj.country_code,
-                    "description": obj.description
-
-                }))
-
-                console.log(finalTableRows)
+        setIsLoading(true)
+        fetchDataFromStoreLeadsUrlAsync(storeleadsUrl, 10)
+            .then(data => {
                 setTableModel({
-                    tableData: finalTableRows,
-                    totalRows: totalTableRows
+                    tableData: data.finalTableData,
+                    totalRows: data.totalTableRows
                 })
+                setIsLoading(false)
 
             })
         previewModalHandle.show();
@@ -98,6 +101,11 @@ export const ExcelPreviewModal = ({ storeleadsUrl }) => {
 
     }
     const hideModal = () => {
+        setTableModel({
+            tableData: [],
+            totalRows: 0
+        })
+
         const modalEle = modalRef.current;
         const bsModal = Modal.getInstance(modalEle);
         bsModal.hide();
@@ -106,19 +114,27 @@ export const ExcelPreviewModal = ({ storeleadsUrl }) => {
     return (
 
         <div>
-            <button type="button" className="btn btn-primary" onClick={showModal}>
+            <button type="button" className="btn btn-primary" onClick={showModal} disabled={!isEnabled}>
                 Preview
             </button>
 
             <div className="modal fade" tabIndex="-1" ref={modalRef}>
-                <div className="modal-dialog">
+                <div className="modal-dialog modal-fullscreen">
                     <div className="modal-content">
                         <div className="modal-header py-2">
                             <h5 className="modal-title" id="exampleModalLabel" style={tableFontColor}>Storeleads Data</h5>
                             <button type="button" className="btn-close" onClick={hideModal}></button>
                         </div>
                         <div className="modal-body">
-                            <TablePrev  tableModel={tableModel}/>
+                            {!isloading ? (<TablePrev tableModel={tableModel} />) : (
+                                <>
+                                    <h3 style={tableFontColor}>Data Loading</h3>
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
