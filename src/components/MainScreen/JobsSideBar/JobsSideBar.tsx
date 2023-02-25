@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 import { jobsApi, processError } from "../../servicecalls/serviceApi";
 import EditMailView from "./EditMailView";
 import styles from "./jobsSideBar.module.css";
@@ -23,15 +24,22 @@ async function getAllJobs() {
 
   return response;
 }
+
 const populateJobs = async (setList, navigateHandle) => {
   let jobs = await getAllJobs();
   let locJobList = jobs.map((r) => (
     <div
       key={r.jobName}
-      className={`${styles.clearListDecoration} ${styles.custom__listItem} py-2`}
+      className={`${styles.clearListDecoration} ${styles.noOverFlowText} ${styles.custom__listItem} py-2 d-flex`}
     >
-      <span> {r.jobName}</span>
-      <span className="float-end me-2">
+      <OverlayTrigger
+        placement="right"
+        delay={{ show: 250, hide: 400 }}
+        overlay={<Tooltip id={`job-tooltip-${r.id} `}>{r.jobName}</Tooltip>}
+      >
+        <div className={styles.noOverFlowText}>{r.jobName}</div>
+      </OverlayTrigger>
+      <div className="me-2 ms-auto">
         <button
           type="button"
           className="btn btn-dark p-1 lh-1"
@@ -41,8 +49,8 @@ const populateJobs = async (setList, navigateHandle) => {
         >
           <FaHistory />
         </button>
-      </span>
-      <span className="float-end me-2">
+      </div>
+      <div className="me-2">
         <button
           type="button"
           className="btn btn-dark p-1 d-block lh-1"
@@ -52,7 +60,7 @@ const populateJobs = async (setList, navigateHandle) => {
         >
           <RiEditBoxLine />
         </button>
-      </span>
+      </div>
     </div>
   ));
 
