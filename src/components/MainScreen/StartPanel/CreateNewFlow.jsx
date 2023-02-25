@@ -304,7 +304,7 @@ const CreateNewFlow = ({ editingMode }) => {
 
   const headerName = editingMode ? (
     <>
-      Edit Flow
+      Edit Job
       <div
         style={redColor}
         className="d-inline-block ms-2 "
