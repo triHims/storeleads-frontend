@@ -8,7 +8,7 @@ export const Greetings = () => {
       <span className="d-flex mb-3">
         <img src={flowIcon} width="64" height="64" alt="flow-icon" />
         <span>
-          <h3 className="mx-3 mt-4">Flow Automator</h3>
+          <h3 className="mx-3 mt-4">Job Automator</h3>
         </span>
       </span>
       {/* button */}
@@ -17,7 +17,7 @@ export const Greetings = () => {
         className="btn btn-success"
         onClick={() => navigate("create")}
       >
-        Create a Flow
+        Create a Job
       </button>
     </div>
   );

@@ -5,6 +5,7 @@ import EditMailView from "./EditMailView";
 import styles from "./jobsSideBar.module.css";
 import { FaHistory } from "react-icons/fa";
 import { RiEditBoxLine } from "react-icons/ri";
+import { MdCreateNewFolder } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { MainScreenContext } from "../MainScreen";
 
@@ -70,6 +71,23 @@ const SideBarData = () => {
   return <>{jobsList}</>;
 };
 
+const CreateJobButton = () => {
+  const navigate = useNavigate();
+  return (
+    <div
+      className={`${styles.clearListDecoration} ${styles.custom__listItem} container`}
+      onClick={() => {
+        navigate("/create");
+      }}
+    >
+      <b>Create Job</b>
+      <span className="float-end me-2">
+        <MdCreateNewFolder />
+      </span>
+    </div>
+  );
+};
+
 const JobsSideBar = () => {
   return (
     <div className="d-flex flex-column justify-content-between h-100">
@@ -84,9 +102,8 @@ const JobsSideBar = () => {
         </div>
       </div>
 
-      <div
-        className={`${styles.clearListDecoration} ${styles.custom__listItem} container mb-5`}
-      >
+      <div className={`container mb-5`}>
+        <CreateJobButton />
         <EditMailView />
       </div>
     </div>

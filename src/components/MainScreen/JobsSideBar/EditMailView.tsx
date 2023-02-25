@@ -8,6 +8,7 @@ import {
   ReactiveLabelHint,
 } from "../StartPanel/ReactiveLabel";
 import styles from "./emailview.module.css";
+import jobSideBarStyle from "./jobsSideBar.module.css";
 import { emailApi, processError, ErrorOb } from "../../servicecalls/serviceApi";
 import { EmailDAO } from "../../servicecalls";
 import { useEffect, useRef, useState } from "react";
@@ -141,7 +142,10 @@ const EditMailView = () => {
 
   return (
     <>
-      <div className="container" onClick={() => setModalActive(true)}>
+      <div
+        className={`${jobSideBarStyle.clearListDecoration} ${jobSideBarStyle.custom__listItem} container`}
+        onClick={() => setModalActive(true)}
+      >
         <b>Edit Emails</b>
         <span className="float-end me-2">
           <MdMarkEmailRead />
@@ -183,7 +187,6 @@ const EditMailView = () => {
           </div>
         </div>
       </AutoModalNormal>
-
     </>
   );
 };

@@ -314,7 +314,7 @@ const CreateNewFlow = ({ editingMode }) => {
       </div>
     </>
   ) : (
-    "Create Flow"
+    "Create Job"
   );
 
   return (
@@ -387,7 +387,7 @@ const CreateNewFlow = ({ editingMode }) => {
                   disabled={!isSavePossible()}
                   onClick={saveData}
                 >
-                  Save Flow
+                  Save Job
                 </button>
               ) : (
                 <button
@@ -396,7 +396,7 @@ const CreateNewFlow = ({ editingMode }) => {
                   disabled={!isUpdatePossible()}
                   onClick={updateData}
                 >
-                  Update Flow
+                  Update Job
                 </button>
               )}
               <button
