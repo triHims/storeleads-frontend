@@ -83,9 +83,13 @@ const Login = () => {
     setIsWaiting(true);
     loginUser(emailInput, passwordInput)
       .then((data) => {
-        login(data);
-
-        navigate("/");
+        return login(data);
+      })
+      .then(() => {
+        setTimeout(() => {
+          //Fire after all the dom updates
+          navigate("/", { replace: true });
+        }, 500);
       })
       .catch((r) => {
         let data = dataFromError(r);

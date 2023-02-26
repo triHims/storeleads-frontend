@@ -152,7 +152,7 @@ const CreateNewFlow = ({ editingMode }) => {
       setJobName("");
     }
     setrefresh();
-  }, [editingMode]);
+  }, [editingMode,jobData]);
 
   /* component stuff */
   const [storeleadsUrl, bindStoreLeads, resetStoreLeads, setStoreleadsUrl] =
