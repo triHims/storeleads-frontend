@@ -1,33 +1,55 @@
-import { ApolloUtlApi, StoreleadsUtlApi, JobsApi, EmailApi } from "./api";
+import {
+  ApolloUtlApi,
+  StoreleadsUtlApi,
+  JobsApi,
+  EmailApi,
+  AuthApi,
+} from "./api";
 
-export let storeleadsUtl = new StoreleadsUtlApi()
-export let apolloApiUtl = new ApolloUtlApi()
+import axios from "axios";
+import {BASE_PATH} from "./base"
 
-export let jobsApi = new JobsApi()
-export let emailApi = new EmailApi()
+axios.interceptors.request.use(
+  (config) => {
+    let data = window.localStorage.getItem("user");
+    if (data) {
+      let token = JSON.parse(data)?.token;
 
-export interface ErrorOb{
-    type: string;
-    status?: number;
-    statusMessage: string;
-    data?: string;
+      token && (config.headers["Authorization"] = "Bearer " + token);
+    }
+    return config;
+  },
+  (error) => {
+    Promise.reject(error);
+  }
+);
+
+export let storeleadsUtl = new StoreleadsUtlApi(null, BASE_PATH, axios);
+export let apolloApiUtl = new ApolloUtlApi(null, BASE_PATH, axios);
+
+export let jobsApi = new JobsApi(null, BASE_PATH, axios);
+export let emailApi = new EmailApi(null, BASE_PATH, axios);
+export let authApi = new AuthApi();
+
+export interface ErrorOb {
+  type: string;
+  status?: number;
+  statusMessage: string;
+  data?: string;
 }
-
 
 export let processError = (error: any) => {
-    if (error.response) {
-        return {
-            type: "error",
-            status: error.response.status,
-            statusMessage: error.response.statusText,
-            data: JSON.stringify(error.response.data)
-        } as ErrorOb
-    }
-    else {
-        return {
-            type: "error",
-            statusMessage: error.message
-        } as ErrorOb
-
-    }
-}
+  if (error.response) {
+    return {
+      type: "error",
+      status: error.response.status,
+      statusMessage: error.response.statusText,
+      data: JSON.stringify(error.response.data),
+    } as ErrorOb;
+  } else {
+    return {
+      type: "error",
+      statusMessage: error.message,
+    } as ErrorOb;
+  }
+};
