@@ -19,9 +19,9 @@ import type { Configuration } from './configuration';
 import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 
-export const BASE_PATH = "http://localhost:8000"
-// export const BASE_PATH = "https://storeleads-backendautomator.trihims.repl.co"
+export const BASE_PATH = process.env.REACT_APP_BACKEND_PATH
 
+console.log(process.env)
 /**
  *
  * @export
