@@ -131,6 +131,12 @@ export interface JobsDAO {
     'persona': string;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof JobsDAO
+     */
+    'email_id_list': Array<string>;
+    /**
+     * 
      * @type {number}
      * @memberof JobsDAO
      */
@@ -172,6 +178,12 @@ export interface JobsDTO {
      * @memberof JobsDTO
      */
     'persona': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof JobsDTO
+     */
+    'email_id_list': Array<string>;
 }
 /**
  * 
@@ -197,6 +209,12 @@ export interface JobsMDAO {
      * @memberof JobsMDAO
      */
     'persona': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof JobsMDAO
+     */
+    'email_id_list': Array<string>;
     /**
      * 
      * @type {number}
@@ -241,6 +259,12 @@ export interface UserDAO {
      * @memberof UserDAO
      */
     'lastname'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserDAO
+     */
+    'isActive'?: boolean;
 }
 /**
  * 
@@ -539,6 +563,46 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary Promotetoken
+         * @param {Array<string>} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        promoteTokenAuthPromoteTokenPost: async (requestBody: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'requestBody' is not null or undefined
+            assertParamExists('promoteTokenAuthPromoteTokenPost', 'requestBody', requestBody)
+            const localVarPath = `/auth/promote-token`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(requestBody, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Read Users Me
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -635,6 +699,17 @@ export const AuthApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Promotetoken
+         * @param {Array<string>} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async promoteTokenAuthPromoteTokenPost(requestBody: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.promoteTokenAuthPromoteTokenPost(requestBody, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Read Users Me
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -681,6 +756,16 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @summary Promotetoken
+         * @param {Array<string>} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        promoteTokenAuthPromoteTokenPost(requestBody: Array<string>, options?: any): AxiosPromise<any> {
+            return localVarFp.promoteTokenAuthPromoteTokenPost(requestBody, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Read Users Me
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -721,6 +806,16 @@ export interface AuthApiInterface {
      * @memberof AuthApiInterface
      */
     loginUserAuthLoginPost(username: string, password: string, grantType?: string, scope?: string, clientId?: string, clientSecret?: string, options?: AxiosRequestConfig): AxiosPromise<any>;
+
+    /**
+     * 
+     * @summary Promotetoken
+     * @param {Array<string>} requestBody 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApiInterface
+     */
+    promoteTokenAuthPromoteTokenPost(requestBody: Array<string>, options?: AxiosRequestConfig): AxiosPromise<any>;
 
     /**
      * 
@@ -765,6 +860,18 @@ export class AuthApi extends BaseAPI implements AuthApiInterface {
      */
     public loginUserAuthLoginPost(username: string, password: string, grantType?: string, scope?: string, clientId?: string, clientSecret?: string, options?: AxiosRequestConfig) {
         return AuthApiFp(this.configuration).loginUserAuthLoginPost(username, password, grantType, scope, clientId, clientSecret, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Promotetoken
+     * @param {Array<string>} requestBody 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public promoteTokenAuthPromoteTokenPost(requestBody: Array<string>, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).promoteTokenAuthPromoteTokenPost(requestBody, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -918,6 +1025,7 @@ export const EmailApiAxiosParamCreator = function (configuration?: Configuration
          * @summary Add Email
          * @param {EmailDTO} emailDTO 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         addEmailEmailPost: async (emailDTO: EmailDTO, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
@@ -959,6 +1067,7 @@ export const EmailApiAxiosParamCreator = function (configuration?: Configuration
          * @param {number} [skip] 
          * @param {number} [limit] 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         getAllEmailsEmailAllGet: async (skip?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
@@ -1002,6 +1111,7 @@ export const EmailApiAxiosParamCreator = function (configuration?: Configuration
          * @summary Remove Email By Id
          * @param {number} emailId 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         removeEmailByIdEmailIdDelete: async (emailId: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
@@ -1043,6 +1153,7 @@ export const EmailApiAxiosParamCreator = function (configuration?: Configuration
          * @summary Remove Email
          * @param {EmailDTO} emailDTO 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         removeEmailEmailDelete: async (emailDTO: EmailDTO, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
@@ -1093,6 +1204,7 @@ export const EmailApiFp = function(configuration?: Configuration) {
          * @summary Add Email
          * @param {EmailDTO} emailDTO 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async addEmailEmailPost(emailDTO: EmailDTO, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EmailDAO>> {
@@ -1105,6 +1217,7 @@ export const EmailApiFp = function(configuration?: Configuration) {
          * @param {number} [skip] 
          * @param {number} [limit] 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async getAllEmailsEmailAllGet(skip?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<EmailDAO>>> {
@@ -1116,6 +1229,7 @@ export const EmailApiFp = function(configuration?: Configuration) {
          * @summary Remove Email By Id
          * @param {number} emailId 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async removeEmailByIdEmailIdDelete(emailId: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
@@ -1127,6 +1241,7 @@ export const EmailApiFp = function(configuration?: Configuration) {
          * @summary Remove Email
          * @param {EmailDTO} emailDTO 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async removeEmailEmailDelete(emailDTO: EmailDTO, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
@@ -1148,6 +1263,7 @@ export const EmailApiFactory = function (configuration?: Configuration, basePath
          * @summary Add Email
          * @param {EmailDTO} emailDTO 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         addEmailEmailPost(emailDTO: EmailDTO, options?: any): AxiosPromise<EmailDAO> {
@@ -1159,6 +1275,7 @@ export const EmailApiFactory = function (configuration?: Configuration, basePath
          * @param {number} [skip] 
          * @param {number} [limit] 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         getAllEmailsEmailAllGet(skip?: number, limit?: number, options?: any): AxiosPromise<Array<EmailDAO>> {
@@ -1169,6 +1286,7 @@ export const EmailApiFactory = function (configuration?: Configuration, basePath
          * @summary Remove Email By Id
          * @param {number} emailId 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         removeEmailByIdEmailIdDelete(emailId: number, options?: any): AxiosPromise<number> {
@@ -1179,6 +1297,7 @@ export const EmailApiFactory = function (configuration?: Configuration, basePath
          * @summary Remove Email
          * @param {EmailDTO} emailDTO 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         removeEmailEmailDelete(emailDTO: EmailDTO, options?: any): AxiosPromise<number> {
@@ -1198,6 +1317,7 @@ export interface EmailApiInterface {
      * @summary Add Email
      * @param {EmailDTO} emailDTO 
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof EmailApiInterface
      */
@@ -1209,6 +1329,7 @@ export interface EmailApiInterface {
      * @param {number} [skip] 
      * @param {number} [limit] 
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof EmailApiInterface
      */
@@ -1219,6 +1340,7 @@ export interface EmailApiInterface {
      * @summary Remove Email By Id
      * @param {number} emailId 
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof EmailApiInterface
      */
@@ -1229,6 +1351,7 @@ export interface EmailApiInterface {
      * @summary Remove Email
      * @param {EmailDTO} emailDTO 
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof EmailApiInterface
      */
@@ -1248,6 +1371,7 @@ export class EmailApi extends BaseAPI implements EmailApiInterface {
      * @summary Add Email
      * @param {EmailDTO} emailDTO 
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof EmailApi
      */
@@ -1261,6 +1385,7 @@ export class EmailApi extends BaseAPI implements EmailApiInterface {
      * @param {number} [skip] 
      * @param {number} [limit] 
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof EmailApi
      */
@@ -1273,6 +1398,7 @@ export class EmailApi extends BaseAPI implements EmailApiInterface {
      * @summary Remove Email By Id
      * @param {number} emailId 
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof EmailApi
      */
@@ -1285,6 +1411,7 @@ export class EmailApi extends BaseAPI implements EmailApiInterface {
      * @summary Remove Email
      * @param {EmailDTO} emailDTO 
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof EmailApi
      */
@@ -2099,6 +2226,136 @@ export class StoreleadsUtlApi extends BaseAPI implements StoreleadsUtlApiInterfa
      */
     public verifyStoreLeadsUrlStoreleadsUtlVerifyStoreLeadsUrlGet(storeleadsURL: string, options?: AxiosRequestConfig) {
         return StoreleadsUtlApiFp(this.configuration).verifyStoreLeadsUrlStoreleadsUtlVerifyStoreLeadsUrlGet(storeleadsURL, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * UsersApi - axios parameter creator
+ * @export
+ */
+export const UsersApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Mark User Active
+         * @param {string} targetEmail 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markUserActiveUsersMarkActiveGet: async (targetEmail: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'targetEmail' is not null or undefined
+            assertParamExists('markUserActiveUsersMarkActiveGet', 'targetEmail', targetEmail)
+            const localVarPath = `/users/markActive`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["admin", "user"], configuration)
+
+            if (targetEmail !== undefined) {
+                localVarQueryParameter['targetEmail'] = targetEmail;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * UsersApi - functional programming interface
+ * @export
+ */
+export const UsersApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UsersApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Mark User Active
+         * @param {string} targetEmail 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async markUserActiveUsersMarkActiveGet(targetEmail: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserDAO>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.markUserActiveUsersMarkActiveGet(targetEmail, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * UsersApi - factory interface
+ * @export
+ */
+export const UsersApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UsersApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Mark User Active
+         * @param {string} targetEmail 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markUserActiveUsersMarkActiveGet(targetEmail: string, options?: any): AxiosPromise<UserDAO> {
+            return localVarFp.markUserActiveUsersMarkActiveGet(targetEmail, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UsersApi - interface
+ * @export
+ * @interface UsersApi
+ */
+export interface UsersApiInterface {
+    /**
+     * 
+     * @summary Mark User Active
+     * @param {string} targetEmail 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApiInterface
+     */
+    markUserActiveUsersMarkActiveGet(targetEmail: string, options?: AxiosRequestConfig): AxiosPromise<UserDAO>;
+
+}
+
+/**
+ * UsersApi - object-oriented interface
+ * @export
+ * @class UsersApi
+ * @extends {BaseAPI}
+ */
+export class UsersApi extends BaseAPI implements UsersApiInterface {
+    /**
+     * 
+     * @summary Mark User Active
+     * @param {string} targetEmail 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public markUserActiveUsersMarkActiveGet(targetEmail: string, options?: AxiosRequestConfig) {
+        return UsersApiFp(this.configuration).markUserActiveUsersMarkActiveGet(targetEmail, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -6,6 +6,7 @@ import { ReactiveLabel } from "./ReactiveLabel";
 import { ExcelPreviewModal } from "./PreviewModal";
 import { ApolloPreviewModal } from "./ApolloPreviewModal";
 import { jobsApi, processError } from "../../servicecalls/serviceApi";
+import {ValidateEmail} from "../../utils/HelperFunctions";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import AutoModalNormal from "../../sharedComponents/AutoModalNormal";
 import { AiFillDelete } from "react-icons/ai";
@@ -19,6 +20,10 @@ const tableFontColor = {
 const redColor = {
   color: "red",
 };
+function getIndividualEmailArr(emails){
+
+    return emails.split(";").map(r=>r.trim())
+}
 async function deleteJob(jobId, setWaiting, successCallBack) {
   if (!jobId) {
     alert("JobId is not found");
@@ -93,11 +98,25 @@ async function fetchJobName(jobName) {
   return response.data ? response.data : {};
 }
 
-async function saveJobsData(jobName, storeLeadsUrl, persona) {
+async function verifyEmailIds(emails){
+    let individualMailArr=getIndividualEmailArr(emails)
+    let allVerified=[]
+
+    for (let mail of individualMailArr){
+	if(!ValidateEmail(mail)){
+	    allVerified.push(mail)
+	}
+    }
+    return allVerified
+
+}
+
+async function saveJobsData(jobName, storeLeadsUrl, persona,email_id_list) {
   let data = {
     jobName,
     storeLeadsUrl,
     persona,
+    email_id_list
   };
 
   let response = {};
@@ -112,11 +131,12 @@ async function saveJobsData(jobName, storeLeadsUrl, persona) {
   return response;
 }
 
-async function updateJobsData(jobId, jobName, storeLeadsUrl, persona) {
+async function updateJobsData(jobId, jobName, storeLeadsUrl, persona,email_id_list) {
   let data = {
     jobName,
     storeLeadsUrl,
     persona,
+    email_id_list
   };
 
   let response = {};
@@ -142,6 +162,9 @@ const CreateNewFlow = ({ editingMode }) => {
         setStoreleadsUrl(jobData.storeLeadsUrl);
         setPersonaList(jobData.persona);
         setJobName(jobData.jobName);
+	  if(jobData.email_id_list && Array.isArray(jobData.email_id_list)){
+	      setEmailIds(jobData.email_id_list.join(";"))
+	  }
       } else {
         console.error(jobData);
         alert("Something went wrong");
@@ -150,6 +173,7 @@ const CreateNewFlow = ({ editingMode }) => {
       setStoreleadsUrl("");
       setPersonaList("");
       setJobName("");
+	setEmailIds("")
     }
     setrefresh();
   }, [editingMode,jobData]);
@@ -160,7 +184,9 @@ const CreateNewFlow = ({ editingMode }) => {
   const [personaList, bindPersonaList, resetPersonaList, setPersonaList] =
     useInput("");
   const [jobName, bindJobName, resetJobName, setJobName] = useInput("");
+  const [emailIds, bindEmailIds, resetEmailIds, setEmailIds] = useInput("");
   const [labelStoreLeadsVerify, setLabelStoreLeadsVerify] = useState();
+  const [labelEmailIdVerify, setlabelEmailIdVerify] = useState("");
   const [labelJobNameVerify, setLabelJobNameVerify] = useState();
 
   const [isSavingData, setIsSavingData] = useState(false);
@@ -236,21 +262,51 @@ const CreateNewFlow = ({ editingMode }) => {
       setLabelJobNameVerify({});
     }
   }, [jobName]);
+    //Email Id verification
+    useEffect(() => {
+	setlabelEmailIdVerify({});
+	if (emailIds) {
+	let timeout = setTimeout(() => {
+	    setlabelEmailIdVerify({ hint: "", message: "Verifying..." });
+	    verifyEmailIds(emailIds).then((errorIdList) => {
+		if (errorIdList.length>0) {
+		setlabelEmailIdVerify({
+		hint: "ERROR",
+		    message: "Email id invalid: - "+errorIdList.join(" "),
+		});
+	    } else {
+		setlabelEmailIdVerify({
+		hint: "SUCCESS",
+		message: "",
+		});
+	    }
+	    });
+	}, 1000);
+	return () => {
+	    clearTimeout(timeout);
+	};
+	}  else {
+	setlabelEmailIdVerify({});
+	}
+    }, [emailIds]);
 
   const isSavePossible = () => {
     return (
-      labelStoreLeadsVerify?.hint === "SUCCESS" &&
-      labelJobNameVerify?.hint === "SUCCESS"
+	labelStoreLeadsVerify?.hint === "SUCCESS" &&
+	    labelJobNameVerify?.hint === "SUCCESS" &&
+	    labelEmailIdVerify?.hint=="SUCCESS" 
     );
   };
   const isUpdatePossible = () => {
-    return labelStoreLeadsVerify?.hint === "SUCCESS";
+      return labelStoreLeadsVerify?.hint === "SUCCESS" &&
+	    labelEmailIdVerify?.hint=="SUCCESS" ;
   };
 
   const saveData = async () => {
     setLabelSaveMessage({ hint: "", message: "Creating Job..." });
     setIsSavingData(true);
-    let data = await saveJobsData(jobName, storeleadsUrl, personaList);
+      let individualMailArr = getIndividualEmailArr(emailIds)
+      let data = await saveJobsData(jobName, storeleadsUrl, personaList,individualMailArr);
 
     setIsSavingData(false);
 
@@ -275,31 +331,31 @@ const CreateNewFlow = ({ editingMode }) => {
     setrefresh();
   };
   const updateData = async () => {
-    setLabelSaveMessage({ hint: "", message: "Updating Job..." });
-    setIsSavingData(true);
-    let data = await updateJobsData(
-      jobData.id,
-      jobName,
-      storeleadsUrl,
-      personaList
-    );
+      setLabelSaveMessage({ hint: "", message: "Updating Job..." });
+      setIsSavingData(true);
+      let emailArr = getIndividualEmailArr(emailIds)
 
-    setIsSavingData(false);
+      
+      let data = await updateJobsData(
+	  jobData.id,
+	  jobName,
+	  storeleadsUrl,
+	  personaList,
+	  emailArr
+      );
 
-    //CLear label after 10 seconds
-    setTimeout(() => {
-      setLabelSaveMessage({ hint: "SUCCESS", message: "" });
-    }, 30000);
+      setIsSavingData(false);
 
-    if (data.type === "error") {
-      setLabelSaveMessage({ hint: "ERROR", message: data.statusMessage });
-      return;
-    }
+      //CLear label after 10 seconds
+      setTimeout(() => {
+	  setLabelSaveMessage({ hint: "SUCCESS", message: "" });
+      }, 30000);
 
-    setLabelSaveMessage({
-      hint: "SUCCESS",
-      message: "Job successfully created",
-    });
+
+      setLabelSaveMessage({
+	  hint: "SUCCESS",
+	  message: "Job successfully created",
+      });
   };
 
   const headerName = editingMode ? (
@@ -333,7 +389,7 @@ const CreateNewFlow = ({ editingMode }) => {
               disabled={editingMode}
             />
           </div>
-          {!editingMode && <ReactiveLabel {...labelJobNameVerify} />}
+          {!editingMode && <push {...labelJobNameVerify} />}
         </div>
         <div className="mb-3">
           <label>Add storeleads Url *</label>
@@ -360,9 +416,19 @@ const CreateNewFlow = ({ editingMode }) => {
           <div class="input-group">
             <input {...bindPersonaList} type="text" class="form-control" />
           </div>
-          <label className={`${styles.bottomHint} mb-3`}>
+          <label className={`${styles.bottomHint}`}>
             Multiple persona can be seperated by semicolon (;)
           </label>
+        </div>
+        <div className="mb-3">
+          <label>Add Email</label>
+          <div class="input-group">
+            <input {...bindEmailIds} type="text" class="form-control" />
+          </div>
+          <label className={`${styles.bottomHint}`}>
+            Multiple emails can be seperated by semicolon (;)
+          </label><br/>
+          <ReactiveLabel {...labelEmailIdVerify} />
         </div>
 
         <div className="my-3 d-flex justify-content-center">
