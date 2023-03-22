@@ -20,10 +20,12 @@ const tableFontColor = {
 const redColor = {
   color: "red",
 };
+
 function getIndividualEmailArr(emails){
 
     return emails.split(";").map(r=>r.trim())
 }
+
 async function deleteJob(jobId, setWaiting, successCallBack) {
   if (!jobId) {
     alert("JobId is not found");
