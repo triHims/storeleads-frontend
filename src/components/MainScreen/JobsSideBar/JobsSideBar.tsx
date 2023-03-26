@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { jobsApi, processError } from "../../servicecalls/serviceApi";
-import EditMailView from "./EditMailView";
 import styles from "./jobsSideBar.module.css";
 import { FaHistory } from "react-icons/fa";
 import { RiEditBoxLine } from "react-icons/ri";
@@ -112,7 +111,6 @@ const JobsSideBar = () => {
 
       <div className={`container mb-5`}>
         <CreateJobButton />
-        <EditMailView />
       </div>
     </div>
   );
