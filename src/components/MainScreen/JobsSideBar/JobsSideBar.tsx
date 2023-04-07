@@ -5,7 +5,8 @@ import { jobsApi, processError } from "../../servicecalls/serviceApi";
 import styles from "./jobsSideBar.module.css";
 import { FaHistory } from "react-icons/fa";
 import { RiEditBoxLine } from "react-icons/ri";
-import { MdCreateNewFolder } from "react-icons/md";
+import { MdCreateNewFolder} from "react-icons/md";
+import { TbWebhook} from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import { MainScreenContext } from "../MainScreen";
 
@@ -43,7 +44,7 @@ const populateJobs = async (setList, navigateHandle) => {
           type="button"
           className="btn btn-dark p-1 lh-1"
           onClick={() => {
-            navigateHandle("/job-history/" + r.id);
+            navigateHandle("/jobs/job-history/" + r.id);
           }}
         >
           <FaHistory />
@@ -54,7 +55,7 @@ const populateJobs = async (setList, navigateHandle) => {
           type="button"
           className="btn btn-dark p-1 d-block lh-1"
           onClick={() => {
-            navigateHandle("/edit/" + r.id);
+            navigateHandle("/jobs/edit/" + r.id);
           }}
         >
           <RiEditBoxLine />
@@ -78,13 +79,31 @@ const SideBarData = () => {
   return <>{jobsList}</>;
 };
 
+const CreateWorkflowButton = () => {
+  const navigate = useNavigate();
+  return (
+    <div
+      className={`${styles.clearListDecoration} ${styles.custom__listItem} container`}
+      onClick={() => {
+        navigate("/workflow/create");
+      }}
+    >
+      <b>Create Workflow</b>
+      <span className="float-end me-2">
+        <TbWebhook/>
+      </span>
+    </div>
+  );
+};
+
+
 const CreateJobButton = () => {
   const navigate = useNavigate();
   return (
     <div
       className={`${styles.clearListDecoration} ${styles.custom__listItem} container`}
       onClick={() => {
-        navigate("/create");
+        navigate("/jobs/create");
       }}
     >
       <b>Create Job</b>
@@ -111,6 +130,7 @@ const JobsSideBar = () => {
 
       <div className={`container mb-5`}>
         <CreateJobButton />
+	<CreateWorkflowButton/>
       </div>
     </div>
   );

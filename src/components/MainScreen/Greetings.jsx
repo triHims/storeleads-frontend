@@ -15,7 +15,7 @@ export const Greetings = () => {
       <button
         type="button"
         className="btn btn-success"
-        onClick={() => navigate("create")}
+        onClick={() => navigate("jobs/create")}
       >
         Create a Job
       </button>

@@ -322,6 +322,81 @@ export interface ValidationError {
      */
     'type': string;
 }
+/**
+ * 
+ * @export
+ * @interface WebhookJob
+ */
+export interface WebhookJob {
+    /**
+     * 
+     * @type {string}
+     * @memberof WebhookJob
+     */
+    'jobName': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof WebhookJob
+     */
+    'email_id_list': Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof WebhookJob
+     */
+    'persona': Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface WebhookJobReturn
+ */
+export interface WebhookJobReturn {
+    /**
+     * 
+     * @type {string}
+     * @memberof WebhookJobReturn
+     */
+    'jobName': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof WebhookJobReturn
+     */
+    'email_id_list': Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof WebhookJobReturn
+     */
+    'persona': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof WebhookJobReturn
+     */
+    '_id'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface WebhookPayloadModel
+ */
+export interface WebhookPayloadModel {
+    /**
+     * 
+     * @type {string}
+     * @memberof WebhookPayloadModel
+     */
+    'pushDate': string;
+    /**
+     * 
+     * @type {object}
+     * @memberof WebhookPayloadModel
+     */
+    'data': object;
+}
 
 /**
  * ApolloUtlApi - axios parameter creator
@@ -1636,6 +1711,54 @@ export const JobsApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary Request Job Run
+         * @param {number} jobId 
+         * @param {boolean} requestBool 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        requestJobRunJobsRequestJobRunGet: async (jobId: number, requestBool: boolean, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'jobId' is not null or undefined
+            assertParamExists('requestJobRunJobsRequestJobRunGet', 'jobId', jobId)
+            // verify required parameter 'requestBool' is not null or undefined
+            assertParamExists('requestJobRunJobsRequestJobRunGet', 'requestBool', requestBool)
+            const localVarPath = `/jobs/requestJobRun`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+            if (jobId !== undefined) {
+                localVarQueryParameter['jobId'] = jobId;
+            }
+
+            if (requestBool !== undefined) {
+                localVarQueryParameter['requestBool'] = requestBool;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Update Job
          * @param {number} jobId 
          * @param {JobsDTO} jobsDTO 
@@ -1749,6 +1872,18 @@ export const JobsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Request Job Run
+         * @param {number} jobId 
+         * @param {boolean} requestBool 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async requestJobRunJobsRequestJobRunGet(jobId: number, requestBool: boolean, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.requestJobRunJobsRequestJobRunGet(jobId, requestBool, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Update Job
          * @param {number} jobId 
          * @param {JobsDTO} jobsDTO 
@@ -1822,6 +1957,17 @@ export const JobsApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @summary Request Job Run
+         * @param {number} jobId 
+         * @param {boolean} requestBool 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        requestJobRunJobsRequestJobRunGet(jobId: number, requestBool: boolean, options?: any): AxiosPromise<string> {
+            return localVarFp.requestJobRunJobsRequestJobRunGet(jobId, requestBool, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Update Job
          * @param {number} jobId 
          * @param {JobsDTO} jobsDTO 
@@ -1890,6 +2036,17 @@ export interface JobsApiInterface {
      * @memberof JobsApiInterface
      */
     getJobByNameJobsGet(jobName: string, options?: AxiosRequestConfig): AxiosPromise<JobsDAO>;
+
+    /**
+     * 
+     * @summary Request Job Run
+     * @param {number} jobId 
+     * @param {boolean} requestBool 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JobsApiInterface
+     */
+    requestJobRunJobsRequestJobRunGet(jobId: number, requestBool: boolean, options?: AxiosRequestConfig): AxiosPromise<string>;
 
     /**
      * 
@@ -1970,6 +2127,19 @@ export class JobsApi extends BaseAPI implements JobsApiInterface {
      */
     public getJobByNameJobsGet(jobName: string, options?: AxiosRequestConfig) {
         return JobsApiFp(this.configuration).getJobByNameJobsGet(jobName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Request Job Run
+     * @param {number} jobId 
+     * @param {boolean} requestBool 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JobsApi
+     */
+    public requestJobRunJobsRequestJobRunGet(jobId: number, requestBool: boolean, options?: AxiosRequestConfig) {
+        return JobsApiFp(this.configuration).requestJobRunJobsRequestJobRunGet(jobId, requestBool, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2356,6 +2526,470 @@ export class UsersApi extends BaseAPI implements UsersApiInterface {
      */
     public markUserActiveUsersMarkActiveGet(targetEmail: string, options?: AxiosRequestConfig) {
         return UsersApiFp(this.configuration).markUserActiveUsersMarkActiveGet(targetEmail, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * WebhookWorkflowsApi - axios parameter creator
+ * @export
+ */
+export const WebhookWorkflowsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Check Workflow Name
+         * @param {string} workflowName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkWorkflowNameWorkflowsCheckNameGet: async (workflowName: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'workflowName' is not null or undefined
+            assertParamExists('checkWorkflowNameWorkflowsCheckNameGet', 'workflowName', workflowName)
+            const localVarPath = `/workflows/checkName`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+            if (workflowName !== undefined) {
+                localVarQueryParameter['workflow_name'] = workflowName;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Create workflow from ui
+         * @summary Create Workflow
+         * @param {WebhookJob} webhookJob 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createWorkflowWorkflowsCreatePost: async (webhookJob: WebhookJob, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'webhookJob' is not null or undefined
+            assertParamExists('createWorkflowWorkflowsCreatePost', 'webhookJob', webhookJob)
+            const localVarPath = `/workflows/create`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(webhookJob, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get All Workflow Webhook Data
+         * @param {string} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllWorkflowWebhookDataWorkflowsWebhookAllGet: async (jobId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'jobId' is not null or undefined
+            assertParamExists('getAllWorkflowWebhookDataWorkflowsWebhookAllGet', 'jobId', jobId)
+            const localVarPath = `/workflows/webhook/all`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+            if (jobId !== undefined) {
+                localVarQueryParameter['jobId'] = jobId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get Workflows
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWorkflowsWorkflowsAllGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/workflows/all`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Save Hook Data
+         * @param {string} jobId 
+         * @param {WebhookPayloadModel} webhookPayloadModel 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        saveHookDataWorkflowsWebhookPost: async (jobId: string, webhookPayloadModel: WebhookPayloadModel, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'jobId' is not null or undefined
+            assertParamExists('saveHookDataWorkflowsWebhookPost', 'jobId', jobId)
+            // verify required parameter 'webhookPayloadModel' is not null or undefined
+            assertParamExists('saveHookDataWorkflowsWebhookPost', 'webhookPayloadModel', webhookPayloadModel)
+            const localVarPath = `/workflows/webhook`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+            if (jobId !== undefined) {
+                localVarQueryParameter['jobId'] = jobId;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(webhookPayloadModel, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * WebhookWorkflowsApi - functional programming interface
+ * @export
+ */
+export const WebhookWorkflowsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = WebhookWorkflowsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Check Workflow Name
+         * @param {string} workflowName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async checkWorkflowNameWorkflowsCheckNameGet(workflowName: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.checkWorkflowNameWorkflowsCheckNameGet(workflowName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Create workflow from ui
+         * @summary Create Workflow
+         * @param {WebhookJob} webhookJob 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createWorkflowWorkflowsCreatePost(webhookJob: WebhookJob, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createWorkflowWorkflowsCreatePost(webhookJob, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get All Workflow Webhook Data
+         * @param {string} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllWorkflowWebhookDataWorkflowsWebhookAllGet(jobId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllWorkflowWebhookDataWorkflowsWebhookAllGet(jobId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get Workflows
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getWorkflowsWorkflowsAllGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<WebhookJobReturn>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getWorkflowsWorkflowsAllGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Save Hook Data
+         * @param {string} jobId 
+         * @param {WebhookPayloadModel} webhookPayloadModel 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async saveHookDataWorkflowsWebhookPost(jobId: string, webhookPayloadModel: WebhookPayloadModel, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.saveHookDataWorkflowsWebhookPost(jobId, webhookPayloadModel, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * WebhookWorkflowsApi - factory interface
+ * @export
+ */
+export const WebhookWorkflowsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = WebhookWorkflowsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Check Workflow Name
+         * @param {string} workflowName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkWorkflowNameWorkflowsCheckNameGet(workflowName: string, options?: any): AxiosPromise<any> {
+            return localVarFp.checkWorkflowNameWorkflowsCheckNameGet(workflowName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Create workflow from ui
+         * @summary Create Workflow
+         * @param {WebhookJob} webhookJob 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createWorkflowWorkflowsCreatePost(webhookJob: WebhookJob, options?: any): AxiosPromise<any> {
+            return localVarFp.createWorkflowWorkflowsCreatePost(webhookJob, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get All Workflow Webhook Data
+         * @param {string} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllWorkflowWebhookDataWorkflowsWebhookAllGet(jobId: string, options?: any): AxiosPromise<any> {
+            return localVarFp.getAllWorkflowWebhookDataWorkflowsWebhookAllGet(jobId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get Workflows
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWorkflowsWorkflowsAllGet(options?: any): AxiosPromise<Array<WebhookJobReturn>> {
+            return localVarFp.getWorkflowsWorkflowsAllGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Save Hook Data
+         * @param {string} jobId 
+         * @param {WebhookPayloadModel} webhookPayloadModel 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        saveHookDataWorkflowsWebhookPost(jobId: string, webhookPayloadModel: WebhookPayloadModel, options?: any): AxiosPromise<any> {
+            return localVarFp.saveHookDataWorkflowsWebhookPost(jobId, webhookPayloadModel, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * WebhookWorkflowsApi - interface
+ * @export
+ * @interface WebhookWorkflowsApi
+ */
+export interface WebhookWorkflowsApiInterface {
+    /**
+     * 
+     * @summary Check Workflow Name
+     * @param {string} workflowName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WebhookWorkflowsApiInterface
+     */
+    checkWorkflowNameWorkflowsCheckNameGet(workflowName: string, options?: AxiosRequestConfig): AxiosPromise<any>;
+
+    /**
+     * Create workflow from ui
+     * @summary Create Workflow
+     * @param {WebhookJob} webhookJob 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WebhookWorkflowsApiInterface
+     */
+    createWorkflowWorkflowsCreatePost(webhookJob: WebhookJob, options?: AxiosRequestConfig): AxiosPromise<any>;
+
+    /**
+     * 
+     * @summary Get All Workflow Webhook Data
+     * @param {string} jobId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WebhookWorkflowsApiInterface
+     */
+    getAllWorkflowWebhookDataWorkflowsWebhookAllGet(jobId: string, options?: AxiosRequestConfig): AxiosPromise<any>;
+
+    /**
+     * 
+     * @summary Get Workflows
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WebhookWorkflowsApiInterface
+     */
+    getWorkflowsWorkflowsAllGet(options?: AxiosRequestConfig): AxiosPromise<Array<WebhookJobReturn>>;
+
+    /**
+     * 
+     * @summary Save Hook Data
+     * @param {string} jobId 
+     * @param {WebhookPayloadModel} webhookPayloadModel 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WebhookWorkflowsApiInterface
+     */
+    saveHookDataWorkflowsWebhookPost(jobId: string, webhookPayloadModel: WebhookPayloadModel, options?: AxiosRequestConfig): AxiosPromise<any>;
+
+}
+
+/**
+ * WebhookWorkflowsApi - object-oriented interface
+ * @export
+ * @class WebhookWorkflowsApi
+ * @extends {BaseAPI}
+ */
+export class WebhookWorkflowsApi extends BaseAPI implements WebhookWorkflowsApiInterface {
+    /**
+     * 
+     * @summary Check Workflow Name
+     * @param {string} workflowName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WebhookWorkflowsApi
+     */
+    public checkWorkflowNameWorkflowsCheckNameGet(workflowName: string, options?: AxiosRequestConfig) {
+        return WebhookWorkflowsApiFp(this.configuration).checkWorkflowNameWorkflowsCheckNameGet(workflowName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Create workflow from ui
+     * @summary Create Workflow
+     * @param {WebhookJob} webhookJob 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WebhookWorkflowsApi
+     */
+    public createWorkflowWorkflowsCreatePost(webhookJob: WebhookJob, options?: AxiosRequestConfig) {
+        return WebhookWorkflowsApiFp(this.configuration).createWorkflowWorkflowsCreatePost(webhookJob, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get All Workflow Webhook Data
+     * @param {string} jobId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WebhookWorkflowsApi
+     */
+    public getAllWorkflowWebhookDataWorkflowsWebhookAllGet(jobId: string, options?: AxiosRequestConfig) {
+        return WebhookWorkflowsApiFp(this.configuration).getAllWorkflowWebhookDataWorkflowsWebhookAllGet(jobId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get Workflows
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WebhookWorkflowsApi
+     */
+    public getWorkflowsWorkflowsAllGet(options?: AxiosRequestConfig) {
+        return WebhookWorkflowsApiFp(this.configuration).getWorkflowsWorkflowsAllGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Save Hook Data
+     * @param {string} jobId 
+     * @param {WebhookPayloadModel} webhookPayloadModel 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WebhookWorkflowsApi
+     */
+    public saveHookDataWorkflowsWebhookPost(jobId: string, webhookPayloadModel: WebhookPayloadModel, options?: AxiosRequestConfig) {
+        return WebhookWorkflowsApiFp(this.configuration).saveHookDataWorkflowsWebhookPost(jobId, webhookPayloadModel, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -5,6 +5,7 @@ import { Greetings } from "./Greetings";
 import JobHistory, { getHistoryData } from "./JobHistory/JobHistory";
 import { MainScreen } from "./MainScreen";
 import CreateNewFlow from "./StartPanel/CreateNewFlow";
+import CreateNewWorkflow from "./StartPanel/CreateNewWebhook";
 const router = createBrowserRouter(
   [
     {
@@ -21,24 +22,33 @@ const router = createBrowserRouter(
               index: true,
             },
             {
-              path: "create",
+              path: "jobs/create",
               element: <CreateNewFlow editingMode={false} />,
-              index: true,
             },
             {
-              path: "edit/:id",
+              path: "jobs/edit/:id",
               element: <CreateNewFlow editingMode={true} />,
-              index: true,
               loader: getHistoryData,
             },
             {
-              path: "job-history/:id",
+              path: "jobs/job-history/:id",
               element: <JobHistory />,
-              index: true,
               loader: getHistoryData,
             },
           ],
         },
+	{
+	    path:"workflow",
+	    element: <MainScreen />,
+	    children: [
+		{
+		    path: "create",
+		    element: <CreateNewWorkflow editingMode={false}/>,
+		    index: true
+		}
+	    ]
+
+	},
         {
           path: "auth/login",
           element: <AuthPage authState={"LOGIN"} />,

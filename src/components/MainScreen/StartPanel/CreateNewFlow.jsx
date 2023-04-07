@@ -42,6 +42,7 @@ async function deleteJob(jobId, setWaiting, successCallBack) {
     console.log(e);
     let errorRes = processError(e);
     console.error(errorRes);
+    alert(errorRes)
     response = errorRes;
   }
 }
@@ -84,7 +85,7 @@ const DeleteFlow = ({ showDelete, setShowDelete, jobData }) => {
           </button>
         </div>
       ) : (
-        <div className="spinner-border text-light" role="status">
+        <div className="spinner-border text-danger" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
       )}

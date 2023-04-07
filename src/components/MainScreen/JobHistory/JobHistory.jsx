@@ -3,7 +3,7 @@ import styles from "./jobHistory.module.css";
 import { jobsApi, processError } from "../../servicecalls/serviceApi";
 import { useLoaderData } from "react-router-dom";
 
-export async function getHistoryData({params}) {
+export async function getHistoryData({ params }) {
   let response = {};
   try {
     response = await jobsApi.getJobByIdJobsIdGet(params.id);
@@ -15,6 +15,20 @@ export async function getHistoryData({params}) {
   }
 
   return response?.data ? response.data : {};
+}
+export function requestJobRun(jobId) {
+  let response = {};
+  jobsApi
+    .requestJobRunJobsRequestJobRunGet(jobId, true)
+        .then((resp) => {
+            response = resp;
+            alert("Job run requested")
+        })
+    .catch((err) => {
+      response = processError(err);
+      alert(response.statusMessage)
+    });
+
 }
 
 const JobHistory = () => {
@@ -46,6 +60,13 @@ const JobHistory = () => {
       <div className="mt-4">
         <h1 className="display-6 fw-bold mb-3">Job History</h1>
         <h5>Job - {jobData?.jobName}</h5>
+        <button
+          type="button"
+          onClick={() => {requestJobRun(jobData?.id)}}
+          className="btn btn-outline-danger py-1 px-2 mx-2"
+        >
+          Request Job Run
+        </button>
 
         <div className="d-flex flex-column  align-items-center justify-content-center px-3">
           <div className={styles.table_view}>
