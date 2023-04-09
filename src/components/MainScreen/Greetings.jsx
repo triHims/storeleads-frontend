@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import flowIcon from "../../assets/icons8-process-64.png";
+import { ROUTER_JOBS_CREATE, ROUTER_WORKFLOW_CREATE } from "../utils/Constants";
 export const Greetings = () => {
   const navigate = useNavigate();
   return (
@@ -12,13 +13,22 @@ export const Greetings = () => {
         </span>
       </span>
       {/* button */}
-      <button
-        type="button"
-        className="btn btn-success"
-        onClick={() => navigate("jobs/create")}
-      >
-        Create a Job
-      </button>
+	<div className="d-flex mb-3">
+	    <button
+		type="button"
+		className="btn btn-success mx-2"
+		onClick={() => navigate(ROUTER_JOBS_CREATE)}
+	    >
+		Create a Job
+	    </button>
+	    <button
+		type="button"
+		className="btn btn-success mx-2"
+		onClick={() => navigate(ROUTER_WORKFLOW_CREATE)}
+	    >
+		Create a Workflow
+	    </button>
+	</div>
     </div>
   );
 };

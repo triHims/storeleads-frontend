@@ -4,6 +4,7 @@ import {
   JobsApi,
   EmailApi,
   AuthApi,
+  WebhookWorkflowsApi,
 } from "./api";
 
 import axios from "axios";
@@ -30,6 +31,7 @@ export let apolloApiUtl = new ApolloUtlApi(null, BASE_PATH, axios);
 export let jobsApi = new JobsApi(null, BASE_PATH, axios);
 export let emailApi = new EmailApi(null, BASE_PATH, axios);
 export let authApi = new AuthApi();
+export let webhookWorkflowsApi = new WebhookWorkflowsApi(null, BASE_PATH, axios);
 
 export interface ErrorOb {
   type: string;

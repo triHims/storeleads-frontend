@@ -1,12 +1,26 @@
 import React from "react";
 import styles from "./jobHistory.module.css";
-import { jobsApi, processError } from "../../servicecalls/serviceApi";
+import { webhookWorkflowsApi,jobsApi, processError } from "../../servicecalls/serviceApi";
 import { useLoaderData } from "react-router-dom";
 
 export async function getHistoryData({ params }) {
   let response = {};
   try {
     response = await jobsApi.getJobByIdJobsIdGet(params.id);
+  } catch (e) {
+    console.log(e);
+    let errorRes = processError(e);
+    console.error(errorRes);
+    return errorRes;
+  }
+
+  return response?.data ? response.data : {};
+}
+
+export async function getHistoryDataWebhook({ params }) {
+  let response = {};
+  try {
+    response = await webhookWorkflowsApi.getWorkflowByIdWorkflowsIdGet(params.id);
   } catch (e) {
     console.log(e);
     let errorRes = processError(e);

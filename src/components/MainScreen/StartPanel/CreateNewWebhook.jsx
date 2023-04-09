@@ -2,13 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import { useInput } from "../../../hooks/useInput";
 import styles from "../mainscreen.module.css";
 import { ReactiveLabel } from "./ReactiveLabel";
-import { jobsApi, processError } from "../../servicecalls/serviceApi";
-import { ValidateEmail } from "../../utils/HelperFunctions";
+import { webhookWorkflowsApi,jobsApi, processError } from "../../servicecalls/serviceApi";
+import { copyTextToClipboad, ValidateEmail, validate_valid_chars } from "../../utils/HelperFunctions";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import AutoModalNormal from "../../sharedComponents/AutoModalNormal";
 import { AiFillDelete } from "react-icons/ai";
 import { TiCancelOutline } from "react-icons/ti";
 import { MainScreenContext } from "../MainScreen";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import { BACKEND_BASE_PATH, BACKEND_WEBHOOK_PREFIX } from "../../utils/Constants";
 
 const tableFontColor = {
 	color: "black",
@@ -18,7 +21,7 @@ const redColor = {
 	color: "red",
 };
 
-function getIndividualEmailArr(emails) {
+function breakStringBySemiColonArr(emails) {
 
 	return emails.split(";").map(r => r.trim())
 }
@@ -31,7 +34,7 @@ async function deleteJob(jobId, setWaiting, successCallBack) {
 	setWaiting?.(true);
 	let response = {};
 	try {
-		response = await jobsApi.deleteJobByIdJobsDelete(jobId);
+	    response = await webhookWorkflowsApi.deleteWorkflowByIdWorkflowsIdDelete(jobId)
 		console.log("response");
 		alert("Job is deleted");
 		successCallBack();
@@ -44,7 +47,6 @@ async function deleteJob(jobId, setWaiting, successCallBack) {
 	}
 }
 const DeleteFlow = ({ showDelete, setShowDelete, jobData }) => {
-	console.log(jobData);
 	const navigate = useNavigate();
 	const [waiting, setWaiting] = useState(false);
 	const header = <span style={tableFontColor}>Delete Job</span>;
@@ -68,7 +70,7 @@ const DeleteFlow = ({ showDelete, setShowDelete, jobData }) => {
 				<div className="d-flex flex-row justify-content-end">
 					<button
 						type="button"
-						onClick={() => deleteJob(jobData.id, setWaiting, closeAndRefresh)}
+						onClick={() => deleteJob(jobData._id, setWaiting, closeAndRefresh)}
 						className="btn btn-outline-danger py-1 px-2 mx-2"
 					>
 						<AiFillDelete />
@@ -90,16 +92,50 @@ const DeleteFlow = ({ showDelete, setShowDelete, jobData }) => {
 	);
 };
 
+function WebhookLinkModal({show,setShow,webhookLink}) {
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  return (
+    <>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
+	<Modal.Header closeButton>
+	    <Modal.Title style={tableFontColor}> Webhook Created </Modal.Title>
+	</Modal.Header>
+          <Modal.Body style={tableFontColor}>
+	      Please copy the link below and paste in storeleads<br/>
+	      <div className={styles.code_bg}>
+		  <code>
+		      {webhookLink}
+		  </code>
+	      </div>
+        </Modal.Body>
+        <Modal.Footer>
+            <Button variant="primary" onClick={()=>copyTextToClipboad(webhookLink)}>
+            Copy
+          </Button>
+            <Button variant="danger" onClick={handleClose}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}
+
 /**
  * @param {string} jobName
  */
-async function fetchWorkflowJob(jobName) {
-	let response = await jobsApi.getJobByNameJobsGet(jobName);
-	return response.data ? response.data : {};
+function fetchWorkflowJob(jobName) {
+	return webhookWorkflowsApi.checkWorkflowNameWorkflowsCheckNameGet(jobName);
 }
 
 async function verifyEmailIds(emails) {
-	let individualMailArr = getIndividualEmailArr(emails)
+	let individualMailArr = breakStringBySemiColonArr(emails)
 	let allVerified = []
 
 	for (let mail of individualMailArr) {
@@ -111,17 +147,28 @@ async function verifyEmailIds(emails) {
 
 }
 
-async function saveJobsData(jobName, storeLeadsUrl, persona, email_id_list) {
+async function verifyPersona(personaList) {
+	let individualMailArr = breakStringBySemiColonArr(personaList) // Using same logic as emails so same function can be used
+	let allVerified = []
+
+	for (let mail of individualMailArr) {
+		if (!validate_valid_chars(mail)) {
+			allVerified.push(mail)
+		}
+	}
+	return allVerified
+}
+
+async function saveJobsData(jobName, persona, email_id_list) {
 	let data = {
-		jobName,
-		storeLeadsUrl,
-		persona,
-		email_id_list
+	    jobName,
+	    email_id_list,
+	    persona
 	};
 
 	let response = {};
 	try {
-		response = await jobsApi.createJobJobsJobPost(data);
+		response = await webhookWorkflowsApi.createWorkflowWorkflowsCreatePost(data);
 	} catch (e) {
 		console.log(e);
 		let errorRes = processError(e);
@@ -131,17 +178,15 @@ async function saveJobsData(jobName, storeLeadsUrl, persona, email_id_list) {
 	return response;
 }
 
-async function updateJobsData(jobId, jobName, storeLeadsUrl, persona, email_id_list) {
+async function updateJobsData(jobId, persona, email_id_list) {
 	let data = {
-		jobName,
-		storeLeadsUrl,
 		persona,
 		email_id_list
 	};
 
 	let response = {};
 	try {
-		response = await jobsApi.updateJobJobsPut(jobId, data);
+		response = await webhookWorkflowsApi.updateWorkflowByIdWorkflowsIdPut(jobId, data);
 	} catch (e) {
 		console.log(e);
 		let errorRes = processError(e);
@@ -159,11 +204,22 @@ const CreateNewWorkflow = ({ editingMode }) => {
 	useEffect(() => {
 		if (editingMode) {
 			if (jobData != null && jobData.jobName) {
-				setPersonaList(jobData.persona);
-				setJobName(jobData.jobName);
 				if (jobData.email_id_list && Array.isArray(jobData.email_id_list)) {
 					setEmailIds(jobData.email_id_list.join(";"))
 				}
+				setJobName(jobData.jobName);
+				if (jobData.persona && Array.isArray(jobData.persona)) {
+				    setPersonaList(jobData.persona.join(";"));
+				}
+
+			    // setApolloPersonaVerify({
+			    // 	hint: "SUCCESS",
+			    // 	message: "",
+			    // });
+			    // setlabelEmailIdVerify({
+			    // 	hint: "SUCCESS",
+			    // 	message: "",
+			    // });
 			} else {
 				console.error(jobData);
 				alert("Something went wrong");
@@ -181,12 +237,15 @@ const CreateNewWorkflow = ({ editingMode }) => {
 	const [jobName, bindJobName, resetJobName, setJobName] = useInput("");
 	const [emailIds, bindEmailIds, resetEmailIds, setEmailIds] = useInput("");
 	const [labelEmailIdVerify, setlabelEmailIdVerify] = useState("");
-	const [labelJobNameVerify, setLabelJobNameVerify] = useState();
+	const [labelJobNameVerify, setLabelJobNameVerify] = useState("");
+	const [labelApolloPersonaVerify, setApolloPersonaVerify] = useState("");
 
 	const [isSavingData, setIsSavingData] = useState(false);
 
 	const [labelSaveMessage, setLabelSaveMessage] = useState();
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [webhookLink,setWebhookLink] = useState("")
+	const [isWebhookLinkModalVisible,setIsWebhookLinkModalVisible] = useState(false)
 
 	const navigate = useNavigate();
 
@@ -196,19 +255,18 @@ const CreateNewWorkflow = ({ editingMode }) => {
 		if (jobName.length >= 3) {
 			let timeout = setTimeout(() => {
 				setLabelJobNameVerify({ hint: "", message: "Verifying..." });
-				fetchWorkflowJob(jobName).then((responseBody) => {
-					if (responseBody?.jobName) {
-						setLabelJobNameVerify({
-							hint: "ERROR",
-							message: "JobName already exists",
-						});
-					} else {
-						setLabelJobNameVerify({
-							hint: "SUCCESS",
-							message: "Valid Job Name",
-						});
-					}
+			    fetchWorkflowJob(jobName).then((responseBody) => {
+				setLabelJobNameVerify({
+				    hint: "SUCCESS",
+				    message: "Valid Workflow Name",
 				});
+			    }).catch(err=>{
+				setLabelJobNameVerify({
+				    hint: "ERROR",
+				    message: "Job name is already taken",
+				});
+
+			    });
 			}, 2000);
 			return () => {
 				clearTimeout(timeout);
@@ -250,20 +308,62 @@ const CreateNewWorkflow = ({ editingMode }) => {
 		}
 	}, [emailIds]);
 
+
+    //Apollo Persona verificaton
+	useEffect(() => {
+		setApolloPersonaVerify({});
+		if (personaList) {
+			let timeout = setTimeout(() => {
+				setApolloPersonaVerify({ hint: "", message: "Verifying..." });
+			    verifyPersona(personaList).then((errorIdList) => {
+					if (errorIdList.length > 0) {
+						setApolloPersonaVerify({
+							hint: "ERROR",
+							message: "Persona invalid: - " + errorIdList.join(" "),
+						});
+					} else {
+						setApolloPersonaVerify({
+							hint: "SUCCESS",
+							message: "",
+						});
+					}
+				});
+			}, 1000);
+			return () => {
+				clearTimeout(timeout);
+			};
+		} else {
+			setApolloPersonaVerify({});
+		}
+	}, [personaList]);
+
 	const isSavePossible = () => {
 		return (
-			labelEmailIdVerify?.hint == "SUCCESS"
+		    labelJobNameVerify?.hint==="SUCCESS" && 
+			labelApolloPersonaVerify?.hint === "SUCCESS" &&
+			labelEmailIdVerify?.hint === "SUCCESS"
 		);
 	};
 	const isUpdatePossible = () => {
-		return labelEmailIdVerify?.hint == "SUCCESS";
+	    return labelApolloPersonaVerify?.hint === "SUCCESS" && labelEmailIdVerify?.hint === "SUCCESS";
 	};
 
+	const constructAndDisplayWebhookLink=(jobId)=>{
+
+	    let finalLink = BACKEND_BASE_PATH+BACKEND_WEBHOOK_PREFIX+"/"+jobId
+
+	    setWebhookLink(finalLink);
+	    setIsWebhookLinkModalVisible(true);
+
+	}
 	const saveData = async () => {
 		setLabelSaveMessage({ hint: "", message: "Creating Job..." });
 		setIsSavingData(true);
-		let individualMailArr = getIndividualEmailArr(emailIds)
-		let data = await saveJobsData(jobName, "", personaList, individualMailArr);
+		let individualMailArr = breakStringBySemiColonArr(emailIds)
+		let personaListBroken = breakStringBySemiColonArr(personaList)
+	    
+		let data = await saveJobsData(jobName, personaListBroken, individualMailArr);
+
 
 		setIsSavingData(false);
 
@@ -282,25 +382,31 @@ const CreateNewWorkflow = ({ editingMode }) => {
 			message: "Job successfully created",
 		});
 
+		constructAndDisplayWebhookLink(data.data._id)
+
 		resetJobName();
 		resetPersonaList();
+		resetEmailIds()
 		setrefresh();
 	};
 	const updateData = async () => {
 		setLabelSaveMessage({ hint: "", message: "Updating Job..." });
 		setIsSavingData(true);
-		let emailArr = getIndividualEmailArr(emailIds)
+		let emailArr = breakStringBySemiColonArr(emailIds)
+		let personaListArr = breakStringBySemiColonArr(personaList)
 
 
 		let data = await updateJobsData(
-			jobData.id,
-			jobName,
-		    "",
-			personaList,
+			jobData._id,
+			personaListArr,
 			emailArr
 		);
 
 		setIsSavingData(false);
+		if (data.type === "error") {
+			setLabelSaveMessage({ hint: "ERROR", message: data.statusMessage });
+			return;
+		}
 
 		//CLear label after 10 seconds
 		setTimeout(() => {
@@ -345,17 +451,18 @@ const CreateNewWorkflow = ({ editingMode }) => {
 							disabled={editingMode}
 						/>
 					</div>
-					{!editingMode && <push {...labelJobNameVerify} />}
+					{!editingMode && <ReactiveLabel {...labelJobNameVerify} />}
 				</div>
 
 				<div className="mb-3">
 					<label>Add Apollo Persona</label>
-					<div class="input-group">
+					<div className="input-group">
 						<input {...bindPersonaList} type="text" class="form-control" />
 					</div>
 					<label className={`${styles.bottomHint}`}>
 						Multiple persona can be seperated by semicolon (;)
-					</label>
+					</label><br/>
+					{!editingMode && <ReactiveLabel {...labelApolloPersonaVerify} />}
 				</div>
 				<div className="mb-3">
 					<label>Add Email</label>
@@ -394,6 +501,13 @@ const CreateNewWorkflow = ({ editingMode }) => {
 									Update Job
 								</button>
 							)}
+							{editingMode && (
+							    <button
+								    type="button"
+								    className="btn btn-info ms-3"
+								onClick={() => {constructAndDisplayWebhookLink(jobData._id)}}
+							    >Webhook Link</button>
+							)}
 							<button
 								type="button"
 								className="btn btn-warning ms-3"
@@ -416,8 +530,13 @@ const CreateNewWorkflow = ({ editingMode }) => {
 					jobData={jobData}
 				/>
 			)}
+		    <WebhookLinkModal show={isWebhookLinkModalVisible} setShow={setIsWebhookLinkModalVisible} webhookLink={webhookLink}/>
 		</div>
 	);
 };
+
+
+
+
 
 export default CreateNewWorkflow;
