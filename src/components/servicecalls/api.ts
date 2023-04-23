@@ -1531,15 +1531,15 @@ export const ExternalWebhookWorkflowsApiAxiosParamCreator = function (configurat
          * 
          * @summary Save Webhook Payload
          * @param {string} jobId 
-         * @param {WebhookPayloadModel} webhookPayloadModel 
+         * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        saveWebhookPayloadExternalWebhookJobIdPost: async (jobId: string, webhookPayloadModel: WebhookPayloadModel, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        saveWebhookPayloadExternalWebhookJobIdPost: async (jobId: string, body: object, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'jobId' is not null or undefined
             assertParamExists('saveWebhookPayloadExternalWebhookJobIdPost', 'jobId', jobId)
-            // verify required parameter 'webhookPayloadModel' is not null or undefined
-            assertParamExists('saveWebhookPayloadExternalWebhookJobIdPost', 'webhookPayloadModel', webhookPayloadModel)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('saveWebhookPayloadExternalWebhookJobIdPost', 'body', body)
             const localVarPath = `/external/webhook/{job_id}`
                 .replace(`{${"job_id"}}`, encodeURIComponent(String(jobId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1560,7 +1560,7 @@ export const ExternalWebhookWorkflowsApiAxiosParamCreator = function (configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(webhookPayloadModel, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1581,12 +1581,12 @@ export const ExternalWebhookWorkflowsApiFp = function(configuration?: Configurat
          * 
          * @summary Save Webhook Payload
          * @param {string} jobId 
-         * @param {WebhookPayloadModel} webhookPayloadModel 
+         * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async saveWebhookPayloadExternalWebhookJobIdPost(jobId: string, webhookPayloadModel: WebhookPayloadModel, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.saveWebhookPayloadExternalWebhookJobIdPost(jobId, webhookPayloadModel, options);
+        async saveWebhookPayloadExternalWebhookJobIdPost(jobId: string, body: object, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.saveWebhookPayloadExternalWebhookJobIdPost(jobId, body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1603,12 +1603,12 @@ export const ExternalWebhookWorkflowsApiFactory = function (configuration?: Conf
          * 
          * @summary Save Webhook Payload
          * @param {string} jobId 
-         * @param {WebhookPayloadModel} webhookPayloadModel 
+         * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        saveWebhookPayloadExternalWebhookJobIdPost(jobId: string, webhookPayloadModel: WebhookPayloadModel, options?: any): AxiosPromise<any> {
-            return localVarFp.saveWebhookPayloadExternalWebhookJobIdPost(jobId, webhookPayloadModel, options).then((request) => request(axios, basePath));
+        saveWebhookPayloadExternalWebhookJobIdPost(jobId: string, body: object, options?: any): AxiosPromise<any> {
+            return localVarFp.saveWebhookPayloadExternalWebhookJobIdPost(jobId, body, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1623,12 +1623,12 @@ export interface ExternalWebhookWorkflowsApiInterface {
      * 
      * @summary Save Webhook Payload
      * @param {string} jobId 
-     * @param {WebhookPayloadModel} webhookPayloadModel 
+     * @param {object} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ExternalWebhookWorkflowsApiInterface
      */
-    saveWebhookPayloadExternalWebhookJobIdPost(jobId: string, webhookPayloadModel: WebhookPayloadModel, options?: AxiosRequestConfig): AxiosPromise<any>;
+    saveWebhookPayloadExternalWebhookJobIdPost(jobId: string, body: object, options?: AxiosRequestConfig): AxiosPromise<any>;
 
 }
 
@@ -1643,13 +1643,13 @@ export class ExternalWebhookWorkflowsApi extends BaseAPI implements ExternalWebh
      * 
      * @summary Save Webhook Payload
      * @param {string} jobId 
-     * @param {WebhookPayloadModel} webhookPayloadModel 
+     * @param {object} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ExternalWebhookWorkflowsApi
      */
-    public saveWebhookPayloadExternalWebhookJobIdPost(jobId: string, webhookPayloadModel: WebhookPayloadModel, options?: AxiosRequestConfig) {
-        return ExternalWebhookWorkflowsApiFp(this.configuration).saveWebhookPayloadExternalWebhookJobIdPost(jobId, webhookPayloadModel, options).then((request) => request(this.axios, this.basePath));
+    public saveWebhookPayloadExternalWebhookJobIdPost(jobId: string, body: object, options?: AxiosRequestConfig) {
+        return ExternalWebhookWorkflowsApiFp(this.configuration).saveWebhookPayloadExternalWebhookJobIdPost(jobId, body, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
