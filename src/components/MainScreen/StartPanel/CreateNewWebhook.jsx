@@ -422,7 +422,7 @@ const CreateNewWorkflow = ({ editingMode }) => {
 
 	const headerName = editingMode ? (
 		<>
-			Edit Storeleads Workflow
+			Edit Workflow
 			<div
 				style={redColor}
 				className="d-inline-block ms-2 "
@@ -432,7 +432,7 @@ const CreateNewWorkflow = ({ editingMode }) => {
 			</div>
 		</>
 	) : (
-		"Create Storeleads Workflow"
+		"Create Workflow"
 	);
 
 	return (
@@ -455,7 +455,7 @@ const CreateNewWorkflow = ({ editingMode }) => {
 				</div>
 
 				<div className="mb-3">
-					<label>Add Apollo Persona</label>
+					<label>Add Persona</label>
 					<div className="input-group">
 						<input {...bindPersonaList} type="text" class="form-control" />
 					</div>
@@ -534,6 +534,7 @@ const CreateNewWorkflow = ({ editingMode }) => {
 		</div>
 	);
 };
+
 
 
 
