@@ -11,11 +11,11 @@ import { useNavigate } from "react-router-dom";
 import { MainScreenContext } from "../MainScreen";
 import { AiFillHome } from "react-icons/ai";
 import { Tab, Tabs } from "react-bootstrap";
-import { ROUTER_WORKFLOW_CREATE, ROUTER_JOBS_CREATE, ROUTER_WORKFLOW_EDIT} from "../../utils/Constants";
+import { ROUTER_WORKFLOW_CREATE, ROUTER_JOBS_CREATE, ROUTER_WORKFLOW_EDIT, ROUTER_WORKFLOW_HISTORY} from "../../utils/Constants";
 async function getAllWebhooks() {
 	let response = [];
 	try {
-		let axiosObj = await webhookWorkflowsApi.getWorkflowsWorkflowsAllGet();
+		let axiosObj = await webhookWorkflowsApi.getWorkflowsForCurrentUserWorkflowsAllForUserGet();
 		response = axiosObj.data;
 	} catch (error) {
 		console.error(processError(error));
@@ -30,7 +30,7 @@ async function getAllWebhooks() {
 async function getAllJobs() {
 	let response = [];
 	try {
-		let axiosObj = await jobsApi.getAllJobsJobsAllGet();
+		let axiosObj = await jobsApi.getAllJobsRelatedToUserJobsAllForUserGet();
 		response = axiosObj.data;
 	} catch (error) {
 		console.error(processError(error));
@@ -55,21 +55,19 @@ const populateWebhookJobs = async (setList, navigateHandle) => {
 			>
 				<div className={styles.noOverFlowText}>{r.jobName}</div>
 			</OverlayTrigger>
-	    {
-			// <div className="me-2 ms-auto">
-			// 	<button
-			// 		type="button"
-			// 		className="btn btn-dark p-1 lh-1"
-			// 		onClick={() => {
-			// 		        // Webhook History
-			// 			navigateHandle(ROUTER_WORKFLOW_EDIT+"/"+ r._id);
-			// 		}}
-			// 	>
-			// 		<FaHistory />
-			// 	</button>
-			// </div>
-	    }
-			<div className="me-2 ms-auto">
+			 <div className="me-2 ms-auto">
+			 	<button
+			 		type="button"
+			 		className="btn btn-dark p-1 lh-1"
+			 		onClick={() => {
+			 		        // Webhook History
+			 			navigateHandle(ROUTER_WORKFLOW_HISTORY+"/"+ r._id);
+			 		}}
+			 	>
+			 		<FaHistory />
+			 	</button>
+			 </div>
+			<div className="me-2 ms-1">
 				<button
 					type="button"
 					className="btn btn-dark p-1 d-block lh-1"

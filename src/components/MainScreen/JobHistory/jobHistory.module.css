@@ -6,3 +6,18 @@
     padding: 0 0.25em 0 0.25em;
 
 }
+
+.font_red{
+    color:red;
+}
+
+.font_green{
+    color: #a0ffa0;
+}
+
+.code_bg{
+    background:black;
+    border-radius: 5px;
+    padding: 10px;
+    padding-top: 5px;
+}

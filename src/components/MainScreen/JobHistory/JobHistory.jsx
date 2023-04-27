@@ -17,19 +17,6 @@ export async function getHistoryData({ params }) {
   return response?.data ? response.data : {};
 }
 
-export async function getHistoryDataWebhook({ params }) {
-  let response = {};
-  try {
-    response = await webhookWorkflowsApi.getWorkflowByIdWorkflowsIdGet(params.id);
-  } catch (e) {
-    console.log(e);
-    let errorRes = processError(e);
-    console.error(errorRes);
-    return errorRes;
-  }
-
-  return response?.data ? response.data : {};
-}
 export function requestJobRun(jobId) {
   let response = {};
   jobsApi

@@ -149,6 +149,30 @@ export interface JobsDAO {
     'creation_date': string;
     /**
      * 
+     * @type {number}
+     * @memberof JobsDAO
+     */
+    'created_by'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof JobsDAO
+     */
+    'created_date'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof JobsDAO
+     */
+    'updated_by'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof JobsDAO
+     */
+    'updated_date'?: string;
+    /**
+     * 
      * @type {Array<JobHistoryDAO>}
      * @memberof JobsDAO
      */
@@ -1742,7 +1766,7 @@ export const JobsApiAxiosParamCreator = function (configuration?: Configuration)
             };
         },
         /**
-         * 
+         * Gets all job related to the user
          * @summary Get All Jobs
          * @param {number} [skip] 
          * @param {number} [limit] 
@@ -1751,6 +1775,50 @@ export const JobsApiAxiosParamCreator = function (configuration?: Configuration)
          */
         getAllJobsJobsAllGet: async (skip?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/jobs/all`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+            if (skip !== undefined) {
+                localVarQueryParameter['skip'] = skip;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Gets all jobs which are created by user
+         * @summary Get All Jobs Related To User
+         * @param {number} [skip] 
+         * @param {number} [limit] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllJobsRelatedToUserJobsAllForUserGet: async (skip?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/jobs/allForUser`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1995,7 +2063,7 @@ export const JobsApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
-         * 
+         * Gets all job related to the user
          * @summary Get All Jobs
          * @param {number} [skip] 
          * @param {number} [limit] 
@@ -2004,6 +2072,18 @@ export const JobsApiFp = function(configuration?: Configuration) {
          */
         async getAllJobsJobsAllGet(skip?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<JobsMDAO>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllJobsJobsAllGet(skip, limit, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Gets all jobs which are created by user
+         * @summary Get All Jobs Related To User
+         * @param {number} [skip] 
+         * @param {number} [limit] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllJobsRelatedToUserJobsAllForUserGet(skip?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<JobsMDAO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllJobsRelatedToUserJobsAllForUserGet(skip, limit, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -2083,7 +2163,7 @@ export const JobsApiFactory = function (configuration?: Configuration, basePath?
             return localVarFp.deleteJobByIdJobsDelete(jobId, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Gets all job related to the user
          * @summary Get All Jobs
          * @param {number} [skip] 
          * @param {number} [limit] 
@@ -2092,6 +2172,17 @@ export const JobsApiFactory = function (configuration?: Configuration, basePath?
          */
         getAllJobsJobsAllGet(skip?: number, limit?: number, options?: any): AxiosPromise<Array<JobsMDAO>> {
             return localVarFp.getAllJobsJobsAllGet(skip, limit, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Gets all jobs which are created by user
+         * @summary Get All Jobs Related To User
+         * @param {number} [skip] 
+         * @param {number} [limit] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllJobsRelatedToUserJobsAllForUserGet(skip?: number, limit?: number, options?: any): AxiosPromise<Array<JobsMDAO>> {
+            return localVarFp.getAllJobsRelatedToUserJobsAllForUserGet(skip, limit, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2165,7 +2256,7 @@ export interface JobsApiInterface {
     deleteJobByIdJobsDelete(jobId: number, options?: AxiosRequestConfig): AxiosPromise<string>;
 
     /**
-     * 
+     * Gets all job related to the user
      * @summary Get All Jobs
      * @param {number} [skip] 
      * @param {number} [limit] 
@@ -2174,6 +2265,17 @@ export interface JobsApiInterface {
      * @memberof JobsApiInterface
      */
     getAllJobsJobsAllGet(skip?: number, limit?: number, options?: AxiosRequestConfig): AxiosPromise<Array<JobsMDAO>>;
+
+    /**
+     * Gets all jobs which are created by user
+     * @summary Get All Jobs Related To User
+     * @param {number} [skip] 
+     * @param {number} [limit] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JobsApiInterface
+     */
+    getAllJobsRelatedToUserJobsAllForUserGet(skip?: number, limit?: number, options?: AxiosRequestConfig): AxiosPromise<Array<JobsMDAO>>;
 
     /**
      * 
@@ -2251,7 +2353,7 @@ export class JobsApi extends BaseAPI implements JobsApiInterface {
     }
 
     /**
-     * 
+     * Gets all job related to the user
      * @summary Get All Jobs
      * @param {number} [skip] 
      * @param {number} [limit] 
@@ -2261,6 +2363,19 @@ export class JobsApi extends BaseAPI implements JobsApiInterface {
      */
     public getAllJobsJobsAllGet(skip?: number, limit?: number, options?: AxiosRequestConfig) {
         return JobsApiFp(this.configuration).getAllJobsJobsAllGet(skip, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Gets all jobs which are created by user
+     * @summary Get All Jobs Related To User
+     * @param {number} [skip] 
+     * @param {number} [limit] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JobsApi
+     */
+    public getAllJobsRelatedToUserJobsAllForUserGet(skip?: number, limit?: number, options?: AxiosRequestConfig) {
+        return JobsApiFp(this.configuration).getAllJobsRelatedToUserJobsAllForUserGet(skip, limit, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2817,7 +2932,7 @@ export const WebhookWorkflowsApiAxiosParamCreator = function (configuration?: Co
             };
         },
         /**
-         * 
+         * Get all the pushed data to a webhook job
          * @summary Get All Workflow Webhook Data
          * @param {string} jobId 
          * @param {*} [options] Override http request option.
@@ -2900,6 +3015,40 @@ export const WebhookWorkflowsApiAxiosParamCreator = function (configuration?: Co
         },
         /**
          * 
+         * @summary Get Workflows For Current User
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWorkflowsForCurrentUserWorkflowsAllForUserGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/workflows/allForUser`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Get Workflows
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2933,7 +3082,7 @@ export const WebhookWorkflowsApiAxiosParamCreator = function (configuration?: Co
             };
         },
         /**
-         * 
+         * Pushes data into a webhook job
          * @summary Save Hook Data
          * @param {string} jobId 
          * @param {WebhookPayloadModel} webhookPayloadModel 
@@ -3070,7 +3219,7 @@ export const WebhookWorkflowsApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
-         * 
+         * Get all the pushed data to a webhook job
          * @summary Get All Workflow Webhook Data
          * @param {string} jobId 
          * @param {*} [options] Override http request option.
@@ -3093,6 +3242,16 @@ export const WebhookWorkflowsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Get Workflows For Current User
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getWorkflowsForCurrentUserWorkflowsAllForUserGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<WebhookJobReturn>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getWorkflowsForCurrentUserWorkflowsAllForUserGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Get Workflows
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3102,7 +3261,7 @@ export const WebhookWorkflowsApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
-         * 
+         * Pushes data into a webhook job
          * @summary Save Hook Data
          * @param {string} jobId 
          * @param {WebhookPayloadModel} webhookPayloadModel 
@@ -3166,7 +3325,7 @@ export const WebhookWorkflowsApiFactory = function (configuration?: Configuratio
             return localVarFp.deleteWorkflowByIdWorkflowsIdDelete(workflowId, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Get all the pushed data to a webhook job
          * @summary Get All Workflow Webhook Data
          * @param {string} jobId 
          * @param {*} [options] Override http request option.
@@ -3187,6 +3346,15 @@ export const WebhookWorkflowsApiFactory = function (configuration?: Configuratio
         },
         /**
          * 
+         * @summary Get Workflows For Current User
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWorkflowsForCurrentUserWorkflowsAllForUserGet(options?: any): AxiosPromise<Array<WebhookJobReturn>> {
+            return localVarFp.getWorkflowsForCurrentUserWorkflowsAllForUserGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get Workflows
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3195,7 +3363,7 @@ export const WebhookWorkflowsApiFactory = function (configuration?: Configuratio
             return localVarFp.getWorkflowsWorkflowsAllGet(options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Pushes data into a webhook job
          * @summary Save Hook Data
          * @param {string} jobId 
          * @param {WebhookPayloadModel} webhookPayloadModel 
@@ -3256,7 +3424,7 @@ export interface WebhookWorkflowsApiInterface {
     deleteWorkflowByIdWorkflowsIdDelete(workflowId: string, options?: AxiosRequestConfig): AxiosPromise<object>;
 
     /**
-     * 
+     * Get all the pushed data to a webhook job
      * @summary Get All Workflow Webhook Data
      * @param {string} jobId 
      * @param {*} [options] Override http request option.
@@ -3277,6 +3445,15 @@ export interface WebhookWorkflowsApiInterface {
 
     /**
      * 
+     * @summary Get Workflows For Current User
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WebhookWorkflowsApiInterface
+     */
+    getWorkflowsForCurrentUserWorkflowsAllForUserGet(options?: AxiosRequestConfig): AxiosPromise<Array<WebhookJobReturn>>;
+
+    /**
+     * 
      * @summary Get Workflows
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3285,7 +3462,7 @@ export interface WebhookWorkflowsApiInterface {
     getWorkflowsWorkflowsAllGet(options?: AxiosRequestConfig): AxiosPromise<Array<WebhookJobReturn>>;
 
     /**
-     * 
+     * Pushes data into a webhook job
      * @summary Save Hook Data
      * @param {string} jobId 
      * @param {WebhookPayloadModel} webhookPayloadModel 
@@ -3352,7 +3529,7 @@ export class WebhookWorkflowsApi extends BaseAPI implements WebhookWorkflowsApiI
     }
 
     /**
-     * 
+     * Get all the pushed data to a webhook job
      * @summary Get All Workflow Webhook Data
      * @param {string} jobId 
      * @param {*} [options] Override http request option.
@@ -3377,6 +3554,17 @@ export class WebhookWorkflowsApi extends BaseAPI implements WebhookWorkflowsApiI
 
     /**
      * 
+     * @summary Get Workflows For Current User
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WebhookWorkflowsApi
+     */
+    public getWorkflowsForCurrentUserWorkflowsAllForUserGet(options?: AxiosRequestConfig) {
+        return WebhookWorkflowsApiFp(this.configuration).getWorkflowsForCurrentUserWorkflowsAllForUserGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Get Workflows
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3387,7 +3575,7 @@ export class WebhookWorkflowsApi extends BaseAPI implements WebhookWorkflowsApiI
     }
 
     /**
-     * 
+     * Pushes data into a webhook job
      * @summary Save Hook Data
      * @param {string} jobId 
      * @param {WebhookPayloadModel} webhookPayloadModel 

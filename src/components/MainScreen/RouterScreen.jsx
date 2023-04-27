@@ -2,7 +2,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AuthPage from "../Auth/AuthPage";
 import { AuthGuard } from "./AuthGuard";
 import { Greetings } from "./Greetings";
-import JobHistory, { getHistoryData, getHistoryDataWebhook } from "./JobHistory/JobHistory";
+import JobHistory, { getHistoryData} from "./JobHistory/JobHistory";
+import WebhookJobHistory, {  getWebhookDataById, getWebhookDetailsAndHistory } from "./JobHistory/WebhookJobHistory";
 import { MainScreen } from "./MainScreen";
 import CreateNewFlow from "./StartPanel/CreateNewFlow";
 import CreateNewWorkflow from "./StartPanel/CreateNewWebhook";
@@ -49,7 +50,12 @@ const router = createBrowserRouter(
 		{
 		    path: "edit/:id",
 		    element: <CreateNewWorkflow editingMode={true}/>,
-		    loader: getHistoryDataWebhook
+		    loader: getWebhookDataById
+		},
+		{
+		    path: "job-history/:id",
+		    element: <WebhookJobHistory/>,
+		    loader: getWebhookDetailsAndHistory
 		}
 	    ]
 
