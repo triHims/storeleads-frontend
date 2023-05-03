@@ -12,6 +12,12 @@ import { MainScreenContext } from "../MainScreen";
 import { AiFillHome } from "react-icons/ai";
 import { Tab, Tabs } from "react-bootstrap";
 import { ROUTER_WORKFLOW_CREATE, ROUTER_JOBS_CREATE, ROUTER_WORKFLOW_EDIT, ROUTER_WORKFLOW_HISTORY} from "../../utils/Constants";
+
+
+const localStyles = {
+  height:"36em"
+}
+
 async function getAllWebhooks() {
 	let response = [];
 	try {
@@ -196,7 +202,7 @@ const WebhooksViewSide = () => {
 	return (
 		<>
 			<h5 className="fw-bold">Previous Webhooks</h5>
-			<div className="ps-2">
+	    <div className="ps-2 overflow-scroll" style={localStyles}>
 				<SideBarDataBuilder dataType="WEBHOOKS"/>
 			</div>
 		</>
