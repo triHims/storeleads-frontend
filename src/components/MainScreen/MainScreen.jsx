@@ -21,12 +21,25 @@ const MainScreenContainer = () => {
 };
 export const MainScreen = () => {
   const [refresh, setrefresh] = useState(0);
+    const [isLoading,setIsLoading] = useState(true)
 
-  const { user } = useAuth();
+    const { user,revalidateLogin } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
+    
+      setIsLoading(true)
     if (!user) {
+      setIsLoading(false)
       navigate("/auth/login");
+    }else{
+	revalidateLogin()
+	    .then(_=>{
+		setIsLoading(false)
+	    })
+	    .catch(_=>{
+	    setIsLoading(false)
+	    navigate("/auth/login");
+	})
     }
   }, [user]);
 
@@ -34,7 +47,17 @@ export const MainScreen = () => {
     <MainScreenContext.Provider
       value={{ refresh, setrefresh: () => setrefresh((r) => r + 1) }}
     >
-      <MainScreenContainer />
+
+	{ isLoading?(
+	    <div style={{alignSelf:"center"}}>
+		<div className="spinner-grow text-primary" style={{width:"3rem", height: "3rem"}} role="status">
+		    <span className="visually-hidden">Loading...</span>
+		</div>
+	    </div>
+	):(
+	    <MainScreenContainer />
+	)
+	}
     </MainScreenContext.Provider>
   );
 };

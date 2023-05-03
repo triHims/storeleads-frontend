@@ -1,5 +1,7 @@
 import { createContext, useContext, useMemo } from "react";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import {authApiWithToken} from "../servicecalls/serviceApi"
+
 
 const AuthContext = createContext(null)
 
@@ -11,6 +13,13 @@ export const AuthProvider = ({ children }) => {
     setUser(data);
   };
 
+    const revalidateLogin =  () =>{
+	return authApiWithToken.readUsersMeAuthUsersMeGet().catch(error=>{
+	    logout()
+	    throw error;
+	})
+    }
+
   // call this function to sign out logged in user
   const logout = () => {
     setUser(null);
@@ -18,9 +27,10 @@ export const AuthProvider = ({ children }) => {
 
   const value = useMemo(
     () => ({
-      user,
-      login,
-      logout
+	user,
+	login,
+	logout,
+	revalidateLogin
     }),
     [user]
   );
