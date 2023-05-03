@@ -261,10 +261,9 @@ const SignUp = () => {
               name="lastname"
               {...bindlastname}
             />
-            <label>Email address</label>
+            <label>LastName</label>
           </div>
         </div>
-        <ReactiveLabel {...labelEmailVerify} />
       </div>
       <div className="mb-3">
         <div className={`${styles.w__custom} input-group has-validation`}>
