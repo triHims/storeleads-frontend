@@ -72,7 +72,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: process.env.REACT_APP_CONTEXT_PATH,
+    basename: process.env.PUBLIC_URL
   }
 );
 
