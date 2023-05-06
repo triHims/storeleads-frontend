@@ -13,8 +13,9 @@ const redColor = {
 	color: "red",
 };
 
-function UserDetailModalPreview({show,setShow}:{show:boolean,setShow:(inp:boolean)=>void}) {
-  const {user,logout} = useAuth();
+function UserDetailModalPreview({show,setShow,authGroup}:{show:boolean,setShow:(inp:boolean)=>void,authGroup:{user,logout}}) {
+  const {user,logout} = authGroup;
+
   const navigate = useNavigate();
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -67,6 +68,9 @@ const ImageComp = (<div className="image-cropper">
 	</div>)
 export const UserCard = () => {
   const [isDetailsVisible,setIsDetailsVisible] = useState(false)
+  const auth = useAuth();
+  const {firstname,lastname} = auth.user?.user;
+
 	return (
 		<div
 			className={`${styles.clearListDecoration} custom__listItem container`}
@@ -74,11 +78,13 @@ export const UserCard = () => {
 			  setIsDetailsVisible(!isDetailsVisible)
 			}}
 		>
-			Harvey Hodd
+	    <span className="overflow-hidden">
+			{firstname + " " + lastname}
+	    </span>
 			<span className="float-end me-1">
 				{ImageComp}
 			</span>
-	    <UserDetailModalPreview show={isDetailsVisible} setShow={setIsDetailsVisible}/>
+	    <UserDetailModalPreview show={isDetailsVisible} setShow={setIsDetailsVisible} authGroup={auth}/>
 		</div>
 	);
 };
