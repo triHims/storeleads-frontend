@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
     }
 
   // call this function to sign out logged in user
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
   };
 

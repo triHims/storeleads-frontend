@@ -12,6 +12,7 @@ import { MainScreenContext } from "../MainScreen";
 import { AiFillHome } from "react-icons/ai";
 import { Tab, Tabs } from "react-bootstrap";
 import { ROUTER_WORKFLOW_CREATE, ROUTER_JOBS_CREATE, ROUTER_WORKFLOW_EDIT, ROUTER_WORKFLOW_HISTORY} from "../../utils/Constants";
+import { UserCard } from "./UserCard/UserCard";
 
 
 const localStyles = {
@@ -248,6 +249,7 @@ const JobsSideBar = () => {
 				<CreateJobButton />
 				<CreateWorkflowButton />
 				<HomeButton />
+				<UserCard/>
 			</div>
 		</div>
 	);

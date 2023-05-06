@@ -1,0 +1,19 @@
+.custom__listItem {
+    margin: 0.25em 0 0 0.25em;
+    padding: 0.5em 0 0.25em 0.5em;
+    border-radius: 5px;
+}
+.custom__listItem:hover {
+    background-color: #282828;
+}
+
+.image{
+    width: 1.8em;
+    height: 1.8em;
+}
+
+.image-cropper {
+  overflow: hidden;
+  border-radius: 50%;
+}
+
