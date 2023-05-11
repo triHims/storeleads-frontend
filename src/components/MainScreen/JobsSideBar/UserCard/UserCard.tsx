@@ -8,7 +8,7 @@ import "./UserCard.css"
 const tableFontColor = {
 	color: "black",
 };
-
+var publicPath=process.env.PUBLIC_URL;
 const redColor = {
 	color: "red",
 };
@@ -64,7 +64,7 @@ function UserDetailModalPreview({show,setShow,authGroup}:{show:boolean,setShow:(
 }
 
 const ImageComp = (<div className="image-cropper">
-		<img className="image"  src="/profile_dummy.png" />
+  <img className="image"  src={publicPath+"/profile_dummy.png"} />
 	</div>)
 export const UserCard = () => {
   const [isDetailsVisible,setIsDetailsVisible] = useState(false)
