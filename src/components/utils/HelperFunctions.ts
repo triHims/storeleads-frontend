@@ -19,7 +19,6 @@ const re_valid_Chars = /^[a-zA-Z0-9_\s&]+$/
   }
 
 
-
 export function copyTextToClipboad(text) {
   // Get the text field
    // Copy the text inside the text field

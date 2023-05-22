@@ -114,12 +114,13 @@ async function verifyEmailIds(emails){
 
 }
 
-async function saveJobsData(jobName, storeLeadsUrl, persona,email_id_list) {
+async function saveJobsData(jobName, storeLeadsUrl, persona,email_id_list,minimum_traffic_count) {
   let data = {
     jobName,
     storeLeadsUrl,
     persona,
-    email_id_list
+    email_id_list,
+    minimum_traffic_count
   };
 
   let response = {};
@@ -134,12 +135,13 @@ async function saveJobsData(jobName, storeLeadsUrl, persona,email_id_list) {
   return response;
 }
 
-async function updateJobsData(jobId, jobName, storeLeadsUrl, persona,email_id_list) {
+async function updateJobsData(jobId, jobName, storeLeadsUrl, persona,email_id_list,minimum_traffic_count) {
   let data = {
     jobName,
     storeLeadsUrl,
     persona,
-    email_id_list
+    email_id_list,
+    minimum_traffic_count
   };
 
   let response = {};
@@ -168,6 +170,7 @@ const CreateNewFlow = ({ editingMode }) => {
 	  if(jobData.email_id_list && Array.isArray(jobData.email_id_list)){
 	      setEmailIds(jobData.email_id_list.join(";"))
 	  }
+	  setTrafficFilter(jobData.minimum_traffic_count?jobData.minimum_traffic_count:0)
       } else {
         console.error(jobData);
         alert("Something went wrong");
@@ -196,6 +199,7 @@ const CreateNewFlow = ({ editingMode }) => {
 
   const [labelSaveMessage, setLabelSaveMessage] = useState();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [trafficFilter, setTrafficFilter] = useState(0);
 
   const navigate = useNavigate();
   //Storeleads validation
@@ -309,7 +313,7 @@ const CreateNewFlow = ({ editingMode }) => {
     setLabelSaveMessage({ hint: "", message: "Creating Job..." });
     setIsSavingData(true);
       let individualMailArr = getIndividualEmailArr(emailIds)
-      let data = await saveJobsData(jobName, storeleadsUrl, personaList,individualMailArr);
+      let data = await saveJobsData(jobName, storeleadsUrl, personaList,individualMailArr,trafficFilter);
 
     setIsSavingData(false);
 
@@ -344,7 +348,8 @@ const CreateNewFlow = ({ editingMode }) => {
 	  jobName,
 	  storeleadsUrl,
 	  personaList,
-	  emailArr
+	  emailArr,
+	  trafficFilter
       );
 
       setIsSavingData(false);
@@ -375,6 +380,17 @@ const CreateNewFlow = ({ editingMode }) => {
   ) : (
     "Create Job"
   );
+
+  const trafficFilterSetNVerify = (event)=>{
+      let key = event.key;
+      let intKey = parseInt(key);
+  
+      if(intKey>=0){
+	  setTrafficFilter(r=>r*10+intKey)
+      }else if(key==="Backspace"){
+	  setTrafficFilter(r=>Math.floor( r/10 ))
+      }
+  }
 
   return (
     <div className="d-flex flex-column  align-items-center h-100">
@@ -433,6 +449,19 @@ const CreateNewFlow = ({ editingMode }) => {
           </label><br/>
           <ReactiveLabel {...labelEmailIdVerify} />
         </div>
+	  <div className="mb-3">
+	      <label class="form-check-label" for="trafficFilter">Traffic Filter</label>
+	      <>
+		  <div class="input-group mt-2">
+		      <input value={trafficFilter} onKeyUp={trafficFilterSetNVerify} type="text" class="form-control" />
+		  </div>
+		  <label className={`${styles.bottomHint}`}>
+		      Filter by minimum amount of traffic
+		  </label><br />
+	      </>
+	      
+
+	  </div>
 
         <div className="my-3 d-flex justify-content-center">
           <ApolloPreviewModal

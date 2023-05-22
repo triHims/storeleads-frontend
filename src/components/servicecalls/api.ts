@@ -140,6 +140,12 @@ export interface JobsDAO {
      * @type {number}
      * @memberof JobsDAO
      */
+    'minimum_traffic_count'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof JobsDAO
+     */
     'id': number;
     /**
      * 
@@ -208,6 +214,12 @@ export interface JobsDTO {
      * @memberof JobsDTO
      */
     'email_id_list': Array<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof JobsDTO
+     */
+    'minimum_traffic_count'?: number;
 }
 /**
  * 
@@ -239,6 +251,12 @@ export interface JobsMDAO {
      * @memberof JobsMDAO
      */
     'email_id_list': Array<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof JobsMDAO
+     */
+    'minimum_traffic_count'?: number;
     /**
      * 
      * @type {number}
@@ -370,6 +388,12 @@ export interface WebhookJob {
      * @memberof WebhookJob
      */
     'persona': Array<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof WebhookJob
+     */
+    'minimum_traffic_count'?: number;
 }
 /**
  * 
@@ -395,6 +419,12 @@ export interface WebhookJobOptional {
      * @memberof WebhookJobOptional
      */
     'persona'?: Array<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof WebhookJobOptional
+     */
+    'minimum_traffic_count'?: number;
 }
 /**
  * 
@@ -420,6 +450,12 @@ export interface WebhookJobReturn {
      * @memberof WebhookJobReturn
      */
     'persona': Array<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof WebhookJobReturn
+     */
+    'minimum_traffic_count'?: number;
     /**
      * 
      * @type {string}
@@ -1766,7 +1802,7 @@ export const JobsApiAxiosParamCreator = function (configuration?: Configuration)
             };
         },
         /**
-         * Gets all job related to the user
+         * Gets all jobs
          * @summary Get All Jobs
          * @param {number} [skip] 
          * @param {number} [limit] 
@@ -2063,7 +2099,7 @@ export const JobsApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
-         * Gets all job related to the user
+         * Gets all jobs
          * @summary Get All Jobs
          * @param {number} [skip] 
          * @param {number} [limit] 
@@ -2163,7 +2199,7 @@ export const JobsApiFactory = function (configuration?: Configuration, basePath?
             return localVarFp.deleteJobByIdJobsDelete(jobId, options).then((request) => request(axios, basePath));
         },
         /**
-         * Gets all job related to the user
+         * Gets all jobs
          * @summary Get All Jobs
          * @param {number} [skip] 
          * @param {number} [limit] 
@@ -2256,7 +2292,7 @@ export interface JobsApiInterface {
     deleteJobByIdJobsDelete(jobId: number, options?: AxiosRequestConfig): AxiosPromise<string>;
 
     /**
-     * Gets all job related to the user
+     * Gets all jobs
      * @summary Get All Jobs
      * @param {number} [skip] 
      * @param {number} [limit] 
@@ -2353,7 +2389,7 @@ export class JobsApi extends BaseAPI implements JobsApiInterface {
     }
 
     /**
-     * Gets all job related to the user
+     * Gets all jobs
      * @summary Get All Jobs
      * @param {number} [skip] 
      * @param {number} [limit] 
