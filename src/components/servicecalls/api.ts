@@ -2531,6 +2531,47 @@ export const StoreleadsUtlApiAxiosParamCreator = function (configuration?: Confi
             };
         },
         /**
+         * 
+         * @summary Get Domain
+         * @param {string} domainName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDomainStoreleadsUtlGetDomainGet: async (domainName: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'domainName' is not null or undefined
+            assertParamExists('getDomainStoreleadsUtlGetDomainGet', 'domainName', domainName)
+            const localVarPath = `/storeleadsUtl/getDomain`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+            if (domainName !== undefined) {
+                localVarQueryParameter['domainName'] = domainName;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Fetches only 10 items of a storeleadsURL
          * @summary Verify Store Leads Url
          * @param {string} storeleadsURL 
@@ -2596,6 +2637,17 @@ export const StoreleadsUtlApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
+         * 
+         * @summary Get Domain
+         * @param {string} domainName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getDomainStoreleadsUtlGetDomainGet(domainName: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getDomainStoreleadsUtlGetDomainGet(domainName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * Fetches only 10 items of a storeleadsURL
          * @summary Verify Store Leads Url
          * @param {string} storeleadsURL 
@@ -2630,6 +2682,16 @@ export const StoreleadsUtlApiFactory = function (configuration?: Configuration, 
             return localVarFp.getDataFromStoreleadsStoreleadsUtlGetDataFromStoreLeadsGet(storeleadsURL, pageSize, cursor, fetchAll, options).then((request) => request(axios, basePath));
         },
         /**
+         * 
+         * @summary Get Domain
+         * @param {string} domainName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDomainStoreleadsUtlGetDomainGet(domainName: string, options?: any): AxiosPromise<any> {
+            return localVarFp.getDomainStoreleadsUtlGetDomainGet(domainName, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Fetches only 10 items of a storeleadsURL
          * @summary Verify Store Leads Url
          * @param {string} storeleadsURL 
@@ -2660,6 +2722,16 @@ export interface StoreleadsUtlApiInterface {
      * @memberof StoreleadsUtlApiInterface
      */
     getDataFromStoreleadsStoreleadsUtlGetDataFromStoreLeadsGet(storeleadsURL: string, pageSize: number, cursor?: string, fetchAll?: boolean, options?: AxiosRequestConfig): AxiosPromise<any>;
+
+    /**
+     * 
+     * @summary Get Domain
+     * @param {string} domainName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoreleadsUtlApiInterface
+     */
+    getDomainStoreleadsUtlGetDomainGet(domainName: string, options?: AxiosRequestConfig): AxiosPromise<any>;
 
     /**
      * Fetches only 10 items of a storeleadsURL
@@ -2693,6 +2765,18 @@ export class StoreleadsUtlApi extends BaseAPI implements StoreleadsUtlApiInterfa
      */
     public getDataFromStoreleadsStoreleadsUtlGetDataFromStoreLeadsGet(storeleadsURL: string, pageSize: number, cursor?: string, fetchAll?: boolean, options?: AxiosRequestConfig) {
         return StoreleadsUtlApiFp(this.configuration).getDataFromStoreleadsStoreleadsUtlGetDataFromStoreLeadsGet(storeleadsURL, pageSize, cursor, fetchAll, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get Domain
+     * @param {string} domainName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoreleadsUtlApi
+     */
+    public getDomainStoreleadsUtlGetDomainGet(domainName: string, options?: AxiosRequestConfig) {
+        return StoreleadsUtlApiFp(this.configuration).getDomainStoreleadsUtlGetDomainGet(domainName, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
