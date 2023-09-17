@@ -3,11 +3,12 @@ import AuthPage from "../Auth/AuthPage";
 import { AuthGuard } from "./AuthGuard";
 import { Greetings } from "./Greetings";
 import JobHistory, { getHistoryData } from "./JobHistory/JobHistory";
+import ProximityJobHistory from "./JobHistory/ProximityJobHistory";
 import WebhookJobHistory, { getWebhookDataById, getWebhookDetailsAndHistory } from "./JobHistory/WebhookJobHistory";
 import { MainScreen } from "./MainScreen";
 import CreateNewFlow from "./StartPanel/CreateNewFlow";
 import CreateNewWorkflow from "./StartPanel/CreateNewWebhook";
-import CreateProximity from "./StartPanel/CreateProximity";
+import CreateProximity, { getProximityDataById } from "./StartPanel/CreateProximity";
 const router = createBrowserRouter(
 	[
 		{
@@ -67,8 +68,18 @@ const router = createBrowserRouter(
 					children: [
 						{
 							path: "create",
-							element: <CreateProximity />,
+							element: <CreateProximity editingMode={false} />,
 							index: true
+						},
+						{
+							path: "edit/:id",
+							element: <CreateProximity editingMode={true} />,
+							loader: getProximityDataById
+						},
+						{
+							path: "job-history/:id",
+							element: <ProximityJobHistory/>,
+							loader: getProximityDataById
 						}
 
 					]

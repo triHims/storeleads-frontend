@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
-import { jobsApi,webhookWorkflowsApi, processError } from "../../servicecalls/serviceApi";
+import { jobsApi, webhookWorkflowsApi, proximityJobApi, processError } from "../../servicecalls/serviceApi";
 import styles from "./jobsSideBar.module.css";
 import { FaHistory } from "react-icons/fa";
 import { RiEditBoxLine } from "react-icons/ri";
@@ -11,12 +11,29 @@ import { useNavigate } from "react-router-dom";
 import { MainScreenContext } from "../MainScreen";
 import { AiFillHome } from "react-icons/ai";
 import { Tab, Tabs } from "react-bootstrap";
-import { ROUTER_WORKFLOW_CREATE, ROUTER_JOBS_CREATE, ROUTER_WORKFLOW_EDIT, ROUTER_WORKFLOW_HISTORY} from "../../utils/Constants";
+import { ROUTER_WORKFLOW_CREATE, ROUTER_JOBS_CREATE, ROUTER_WORKFLOW_EDIT, ROUTER_WORKFLOW_HISTORY, ROUTER_PROXIMITY_HISTORY, ROUTER_PROXIMITY_EDIT } from "../../utils/Constants";
 import { UserCard } from "./UserCard/UserCard";
 
 
 const localStyles = {
-  height:"36em"
+	height: "36em"
+}
+
+
+
+async function getAllProximity() {
+	let response = [];
+	try {
+		let axiosObj = await proximityJobApi.getJobsForCurrentUserProximityAllForUserGet();
+		response = axiosObj.data;
+	} catch (error) {
+		console.error(processError(error));
+		response = [];
+	}
+
+	response.sort((first, second) => second.created_date - first.created_date);
+
+	return response;
 }
 
 async function getAllWebhooks() {
@@ -48,6 +65,48 @@ async function getAllJobs() {
 
 	return response;
 }
+const populateProximityJobs = async (setList, navigateHandle) => {
+	let jobs = await getAllProximity();
+	let locJobList = jobs.map((r) => (
+		<div
+			key={r.jobName}
+			className={`${styles.clearListDecoration} ${styles.noOverFlowText} ${styles.custom__listItem} py-2 d-flex`}
+		>
+			<OverlayTrigger
+				placement="right"
+				delay={{ show: 250, hide: 400 }}
+				overlay={<Tooltip id={`job-tooltip-${r.id} `}>{r.jobName}</Tooltip>}
+			>
+				<div className={styles.noOverFlowText}>{r.jobName}</div>
+			</OverlayTrigger>
+			<div className="me-2 ms-auto">
+				<button
+					type="button"
+					className="btn btn-dark p-1 lh-1"
+					onClick={() => {
+						// Webhook History
+						navigateHandle(ROUTER_PROXIMITY_HISTORY + "/" + r._id);
+					}}
+				>
+					<FaHistory />
+				</button>
+			</div>
+			<div className="me-2 ms-1">
+				<button
+					type="button"
+					className="btn btn-dark p-1 d-block lh-1"
+					onClick={() => {
+						navigateHandle(ROUTER_PROXIMITY_EDIT + "/" + r._id);
+					}}
+				>
+					<RiEditBoxLine />
+				</button>
+			</div>
+		</div>
+	));
+
+	setList(locJobList);
+};
 const populateWebhookJobs = async (setList, navigateHandle) => {
 	let jobs = await getAllWebhooks();
 	let locJobList = jobs.map((r) => (
@@ -62,24 +121,24 @@ const populateWebhookJobs = async (setList, navigateHandle) => {
 			>
 				<div className={styles.noOverFlowText}>{r.jobName}</div>
 			</OverlayTrigger>
-			 <div className="me-2 ms-auto">
-			 	<button
-			 		type="button"
-			 		className="btn btn-dark p-1 lh-1"
-			 		onClick={() => {
-			 		        // Webhook History
-			 			navigateHandle(ROUTER_WORKFLOW_HISTORY+"/"+ r._id);
-			 		}}
-			 	>
-			 		<FaHistory />
-			 	</button>
-			 </div>
+			<div className="me-2 ms-auto">
+				<button
+					type="button"
+					className="btn btn-dark p-1 lh-1"
+					onClick={() => {
+						// Webhook History
+						navigateHandle(ROUTER_WORKFLOW_HISTORY + "/" + r._id);
+					}}
+				>
+					<FaHistory />
+				</button>
+			</div>
 			<div className="me-2 ms-1">
 				<button
 					type="button"
 					className="btn btn-dark p-1 d-block lh-1"
 					onClick={() => {
-						navigateHandle(ROUTER_WORKFLOW_EDIT+"/"+ r._id);
+						navigateHandle(ROUTER_WORKFLOW_EDIT + "/" + r._id);
 					}}
 				>
 					<RiEditBoxLine />
@@ -133,16 +192,18 @@ const populateJobs = async (setList, navigateHandle) => {
 	setList(locJobList);
 };
 
-const SideBarDataBuilder = ({dataType}) => {
+const SideBarDataBuilder = ({ dataType }) => {
 	const [jobsList, setJobList] = useState([]);
 	let navigate = useNavigate();
 
 	const { refresh } = useContext(MainScreenContext);
 	useEffect(() => {
-	  if(dataType==="WEBHOOKS")
-	    populateWebhookJobs(setJobList,navigate)
-	  else
-	    populateJobs(setJobList, navigate);
+		if (dataType === "WEBHOOKS")
+			populateWebhookJobs(setJobList, navigate)
+		else if (dataType === "PROXIMITY")
+			populateProximityJobs(setJobList, navigate)
+		else
+			populateJobs(setJobList, navigate);
 	}, [refresh]);
 
 	return <>{jobsList}</>;
@@ -203,8 +264,8 @@ const WebhooksViewSide = () => {
 	return (
 		<>
 			<h5 className="fw-bold">Previous Webhooks</h5>
-	    <div className="ps-2 overflow-scroll" style={localStyles}>
-				<SideBarDataBuilder dataType="WEBHOOKS"/>
+			<div className="ps-2 overflow-scroll" style={localStyles}>
+				<SideBarDataBuilder dataType="WEBHOOKS" />
 			</div>
 		</>
 	)
@@ -215,7 +276,18 @@ const JobsViewSide = () => {
 		<>
 			<h5 className="fw-bold">Previous Jobs</h5>
 			<div className="ps-2">
-	    <SideBarDataBuilder dataType="JOBS" />
+				<SideBarDataBuilder dataType="JOBS" />
+			</div>
+		</>
+	)
+
+}
+const ProximityViewSide = () => {
+	return (
+		<>
+			<h5 className="fw-bold">Previous Jobs</h5>
+			<div className="ps-2">
+				<SideBarDataBuilder dataType="PROXIMITY" />
 			</div>
 		</>
 	)
@@ -235,10 +307,13 @@ const JobsSideBar = () => {
 							fill
 						>
 							<Tab eventKey="job" title="Jobs">
-							    <JobsViewSide/>
+								<JobsViewSide />
 							</Tab>
 							<Tab eventKey="webhook" title="Webhook">
-							    <WebhooksViewSide/>
+								<WebhooksViewSide />
+							</Tab>
+							<Tab eventKey="proximity" title="Proximity">
+								<ProximityViewSide />
 							</Tab>
 						</Tabs>
 					</div>
@@ -249,7 +324,7 @@ const JobsSideBar = () => {
 				<CreateJobButton />
 				<CreateWorkflowButton />
 				<HomeButton />
-				<UserCard/>
+				<UserCard />
 			</div>
 		</div>
 	);

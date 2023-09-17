@@ -280,6 +280,104 @@ export interface LocationInner {
 /**
  * 
  * @export
+ * @interface ProximityJob
+ */
+export interface ProximityJob {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJob
+     */
+    'sourceDomain': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJob
+     */
+    'jobName'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ProximityJob
+     */
+    'email_id_list'?: Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ProximityJob
+     */
+    'persona'?: Array<string>;
+    /**
+     * 
+     * @type {object}
+     * @memberof ProximityJob
+     */
+    'filter': object;
+}
+/**
+ * 
+ * @export
+ * @interface ProximityJobDB
+ */
+export interface ProximityJobDB {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJobDB
+     */
+    'sourceDomain': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJobDB
+     */
+    'jobName'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ProximityJobDB
+     */
+    'email_id_list'?: Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ProximityJobDB
+     */
+    'persona'?: Array<string>;
+    /**
+     * 
+     * @type {object}
+     * @memberof ProximityJobDB
+     */
+    'filter': object;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJobDB
+     */
+    'created_by'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJobDB
+     */
+    'created_date'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJobDB
+     */
+    'updated_by'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJobDB
+     */
+    'updated_date'?: string;
+}
+/**
+ * 
+ * @export
  * @interface UserDAO
  */
 export interface UserDAO {
@@ -2467,6 +2565,627 @@ export class JobsApi extends BaseAPI implements JobsApiInterface {
 
 
 /**
+ * ProximityJobsApi - axios parameter creator
+ * @export
+ */
+export const ProximityJobsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Check Job Name
+         * @param {string} jobName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkJobNameProximityCheckNameGet: async (jobName: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'jobName' is not null or undefined
+            assertParamExists('checkJobNameProximityCheckNameGet', 'jobName', jobName)
+            const localVarPath = `/proximity/checkName`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+            if (jobName !== undefined) {
+                localVarQueryParameter['job_name'] = jobName;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Add a proximity job
+         * @summary Create Job
+         * @param {ProximityJob} proximityJob 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createJobProximityCreatePost: async (proximityJob: ProximityJob, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'proximityJob' is not null or undefined
+            assertParamExists('createJobProximityCreatePost', 'proximityJob', proximityJob)
+            const localVarPath = `/proximity/create`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(proximityJob, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Delete Proximity Job By Id
+         * @param {string} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteProximityJobByIdProximityIdDelete: async (jobId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'jobId' is not null or undefined
+            assertParamExists('deleteProximityJobByIdProximityIdDelete', 'jobId', jobId)
+            const localVarPath = `/proximity/id`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+            if (jobId !== undefined) {
+                localVarQueryParameter['job_id'] = jobId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get All Jobs
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllJobsProximityAllGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/proximity/all`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get Jobs For Current User
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getJobsForCurrentUserProximityAllForUserGet: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/proximity/allForUser`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get Proximity Job By Id
+         * @param {string} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProximityJobByIdProximityIdGet: async (jobId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'jobId' is not null or undefined
+            assertParamExists('getProximityJobByIdProximityIdGet', 'jobId', jobId)
+            const localVarPath = `/proximity/id`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+            if (jobId !== undefined) {
+                localVarQueryParameter['job_id'] = jobId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Update Proximity Job By Id
+         * @param {string} jobId 
+         * @param {ProximityJobDB} proximityJobDB 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateProximityJobByIdProximityIdPut: async (jobId: string, proximityJobDB: ProximityJobDB, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'jobId' is not null or undefined
+            assertParamExists('updateProximityJobByIdProximityIdPut', 'jobId', jobId)
+            // verify required parameter 'proximityJobDB' is not null or undefined
+            assertParamExists('updateProximityJobByIdProximityIdPut', 'proximityJobDB', proximityJobDB)
+            const localVarPath = `/proximity/id`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+            if (jobId !== undefined) {
+                localVarQueryParameter['job_id'] = jobId;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(proximityJobDB, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ProximityJobsApi - functional programming interface
+ * @export
+ */
+export const ProximityJobsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ProximityJobsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Check Job Name
+         * @param {string} jobName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async checkJobNameProximityCheckNameGet(jobName: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.checkJobNameProximityCheckNameGet(jobName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Add a proximity job
+         * @summary Create Job
+         * @param {ProximityJob} proximityJob 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createJobProximityCreatePost(proximityJob: ProximityJob, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createJobProximityCreatePost(proximityJob, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Delete Proximity Job By Id
+         * @param {string} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteProximityJobByIdProximityIdDelete(jobId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteProximityJobByIdProximityIdDelete(jobId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get All Jobs
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllJobsProximityAllGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProximityJobDB>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllJobsProximityAllGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get Jobs For Current User
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getJobsForCurrentUserProximityAllForUserGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProximityJobDB>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getJobsForCurrentUserProximityAllForUserGet(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get Proximity Job By Id
+         * @param {string} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getProximityJobByIdProximityIdGet(jobId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProximityJobByIdProximityIdGet(jobId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Update Proximity Job By Id
+         * @param {string} jobId 
+         * @param {ProximityJobDB} proximityJobDB 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateProximityJobByIdProximityIdPut(jobId: string, proximityJobDB: ProximityJobDB, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProximityJobByIdProximityIdPut(jobId, proximityJobDB, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ProximityJobsApi - factory interface
+ * @export
+ */
+export const ProximityJobsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ProximityJobsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Check Job Name
+         * @param {string} jobName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkJobNameProximityCheckNameGet(jobName: string, options?: any): AxiosPromise<any> {
+            return localVarFp.checkJobNameProximityCheckNameGet(jobName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Add a proximity job
+         * @summary Create Job
+         * @param {ProximityJob} proximityJob 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createJobProximityCreatePost(proximityJob: ProximityJob, options?: any): AxiosPromise<any> {
+            return localVarFp.createJobProximityCreatePost(proximityJob, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Delete Proximity Job By Id
+         * @param {string} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteProximityJobByIdProximityIdDelete(jobId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.deleteProximityJobByIdProximityIdDelete(jobId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get All Jobs
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllJobsProximityAllGet(options?: any): AxiosPromise<Array<ProximityJobDB>> {
+            return localVarFp.getAllJobsProximityAllGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get Jobs For Current User
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getJobsForCurrentUserProximityAllForUserGet(options?: any): AxiosPromise<Array<ProximityJobDB>> {
+            return localVarFp.getJobsForCurrentUserProximityAllForUserGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get Proximity Job By Id
+         * @param {string} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProximityJobByIdProximityIdGet(jobId: string, options?: any): AxiosPromise<any> {
+            return localVarFp.getProximityJobByIdProximityIdGet(jobId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update Proximity Job By Id
+         * @param {string} jobId 
+         * @param {ProximityJobDB} proximityJobDB 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateProximityJobByIdProximityIdPut(jobId: string, proximityJobDB: ProximityJobDB, options?: any): AxiosPromise<object> {
+            return localVarFp.updateProximityJobByIdProximityIdPut(jobId, proximityJobDB, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ProximityJobsApi - interface
+ * @export
+ * @interface ProximityJobsApi
+ */
+export interface ProximityJobsApiInterface {
+    /**
+     * 
+     * @summary Check Job Name
+     * @param {string} jobName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApiInterface
+     */
+    checkJobNameProximityCheckNameGet(jobName: string, options?: AxiosRequestConfig): AxiosPromise<any>;
+
+    /**
+     * Add a proximity job
+     * @summary Create Job
+     * @param {ProximityJob} proximityJob 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApiInterface
+     */
+    createJobProximityCreatePost(proximityJob: ProximityJob, options?: AxiosRequestConfig): AxiosPromise<any>;
+
+    /**
+     * 
+     * @summary Delete Proximity Job By Id
+     * @param {string} jobId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApiInterface
+     */
+    deleteProximityJobByIdProximityIdDelete(jobId: string, options?: AxiosRequestConfig): AxiosPromise<object>;
+
+    /**
+     * 
+     * @summary Get All Jobs
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApiInterface
+     */
+    getAllJobsProximityAllGet(options?: AxiosRequestConfig): AxiosPromise<Array<ProximityJobDB>>;
+
+    /**
+     * 
+     * @summary Get Jobs For Current User
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApiInterface
+     */
+    getJobsForCurrentUserProximityAllForUserGet(options?: AxiosRequestConfig): AxiosPromise<Array<ProximityJobDB>>;
+
+    /**
+     * 
+     * @summary Get Proximity Job By Id
+     * @param {string} jobId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApiInterface
+     */
+    getProximityJobByIdProximityIdGet(jobId: string, options?: AxiosRequestConfig): AxiosPromise<any>;
+
+    /**
+     * 
+     * @summary Update Proximity Job By Id
+     * @param {string} jobId 
+     * @param {ProximityJobDB} proximityJobDB 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApiInterface
+     */
+    updateProximityJobByIdProximityIdPut(jobId: string, proximityJobDB: ProximityJobDB, options?: AxiosRequestConfig): AxiosPromise<object>;
+
+}
+
+/**
+ * ProximityJobsApi - object-oriented interface
+ * @export
+ * @class ProximityJobsApi
+ * @extends {BaseAPI}
+ */
+export class ProximityJobsApi extends BaseAPI implements ProximityJobsApiInterface {
+    /**
+     * 
+     * @summary Check Job Name
+     * @param {string} jobName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApi
+     */
+    public checkJobNameProximityCheckNameGet(jobName: string, options?: AxiosRequestConfig) {
+        return ProximityJobsApiFp(this.configuration).checkJobNameProximityCheckNameGet(jobName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Add a proximity job
+     * @summary Create Job
+     * @param {ProximityJob} proximityJob 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApi
+     */
+    public createJobProximityCreatePost(proximityJob: ProximityJob, options?: AxiosRequestConfig) {
+        return ProximityJobsApiFp(this.configuration).createJobProximityCreatePost(proximityJob, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Delete Proximity Job By Id
+     * @param {string} jobId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApi
+     */
+    public deleteProximityJobByIdProximityIdDelete(jobId: string, options?: AxiosRequestConfig) {
+        return ProximityJobsApiFp(this.configuration).deleteProximityJobByIdProximityIdDelete(jobId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get All Jobs
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApi
+     */
+    public getAllJobsProximityAllGet(options?: AxiosRequestConfig) {
+        return ProximityJobsApiFp(this.configuration).getAllJobsProximityAllGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get Jobs For Current User
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApi
+     */
+    public getJobsForCurrentUserProximityAllForUserGet(options?: AxiosRequestConfig) {
+        return ProximityJobsApiFp(this.configuration).getJobsForCurrentUserProximityAllForUserGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get Proximity Job By Id
+     * @param {string} jobId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApi
+     */
+    public getProximityJobByIdProximityIdGet(jobId: string, options?: AxiosRequestConfig) {
+        return ProximityJobsApiFp(this.configuration).getProximityJobByIdProximityIdGet(jobId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update Proximity Job By Id
+     * @param {string} jobId 
+     * @param {ProximityJobDB} proximityJobDB 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApi
+     */
+    public updateProximityJobByIdProximityIdPut(jobId: string, proximityJobDB: ProximityJobDB, options?: AxiosRequestConfig) {
+        return ProximityJobsApiFp(this.configuration).updateProximityJobByIdProximityIdPut(jobId, proximityJobDB, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
  * StoreleadsUtlApi - axios parameter creator
  * @export
  */
@@ -2572,6 +3291,61 @@ export const StoreleadsUtlApiAxiosParamCreator = function (configuration?: Confi
             };
         },
         /**
+         * 
+         * @summary Get Domain With Filter
+         * @param {object} body 
+         * @param {number} [pageSize] 
+         * @param {string} [cursor] 
+         * @param {boolean} [shouldFetchNextPages] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDomainWithFilterStoreleadsUtlPostDomainByFilterPost: async (body: object, pageSize?: number, cursor?: string, shouldFetchNextPages?: boolean, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('getDomainWithFilterStoreleadsUtlPostDomainByFilterPost', 'body', body)
+            const localVarPath = `/storeleadsUtl/postDomainByFilter`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+            if (cursor !== undefined) {
+                localVarQueryParameter['cursor'] = cursor;
+            }
+
+            if (shouldFetchNextPages !== undefined) {
+                localVarQueryParameter['shouldFetchNextPages'] = shouldFetchNextPages;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Fetches only 10 items of a storeleadsURL
          * @summary Verify Store Leads Url
          * @param {string} storeleadsURL 
@@ -2648,6 +3422,20 @@ export const StoreleadsUtlApiFp = function(configuration?: Configuration) {
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
+         * 
+         * @summary Get Domain With Filter
+         * @param {object} body 
+         * @param {number} [pageSize] 
+         * @param {string} [cursor] 
+         * @param {boolean} [shouldFetchNextPages] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getDomainWithFilterStoreleadsUtlPostDomainByFilterPost(body: object, pageSize?: number, cursor?: string, shouldFetchNextPages?: boolean, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getDomainWithFilterStoreleadsUtlPostDomainByFilterPost(body, pageSize, cursor, shouldFetchNextPages, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * Fetches only 10 items of a storeleadsURL
          * @summary Verify Store Leads Url
          * @param {string} storeleadsURL 
@@ -2692,6 +3480,19 @@ export const StoreleadsUtlApiFactory = function (configuration?: Configuration, 
             return localVarFp.getDomainStoreleadsUtlGetDomainGet(domainName, options).then((request) => request(axios, basePath));
         },
         /**
+         * 
+         * @summary Get Domain With Filter
+         * @param {object} body 
+         * @param {number} [pageSize] 
+         * @param {string} [cursor] 
+         * @param {boolean} [shouldFetchNextPages] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDomainWithFilterStoreleadsUtlPostDomainByFilterPost(body: object, pageSize?: number, cursor?: string, shouldFetchNextPages?: boolean, options?: any): AxiosPromise<any> {
+            return localVarFp.getDomainWithFilterStoreleadsUtlPostDomainByFilterPost(body, pageSize, cursor, shouldFetchNextPages, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Fetches only 10 items of a storeleadsURL
          * @summary Verify Store Leads Url
          * @param {string} storeleadsURL 
@@ -2732,6 +3533,19 @@ export interface StoreleadsUtlApiInterface {
      * @memberof StoreleadsUtlApiInterface
      */
     getDomainStoreleadsUtlGetDomainGet(domainName: string, options?: AxiosRequestConfig): AxiosPromise<any>;
+
+    /**
+     * 
+     * @summary Get Domain With Filter
+     * @param {object} body 
+     * @param {number} [pageSize] 
+     * @param {string} [cursor] 
+     * @param {boolean} [shouldFetchNextPages] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoreleadsUtlApiInterface
+     */
+    getDomainWithFilterStoreleadsUtlPostDomainByFilterPost(body: object, pageSize?: number, cursor?: string, shouldFetchNextPages?: boolean, options?: AxiosRequestConfig): AxiosPromise<any>;
 
     /**
      * Fetches only 10 items of a storeleadsURL
@@ -2777,6 +3591,21 @@ export class StoreleadsUtlApi extends BaseAPI implements StoreleadsUtlApiInterfa
      */
     public getDomainStoreleadsUtlGetDomainGet(domainName: string, options?: AxiosRequestConfig) {
         return StoreleadsUtlApiFp(this.configuration).getDomainStoreleadsUtlGetDomainGet(domainName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get Domain With Filter
+     * @param {object} body 
+     * @param {number} [pageSize] 
+     * @param {string} [cursor] 
+     * @param {boolean} [shouldFetchNextPages] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoreleadsUtlApi
+     */
+    public getDomainWithFilterStoreleadsUtlPostDomainByFilterPost(body: object, pageSize?: number, cursor?: string, shouldFetchNextPages?: boolean, options?: AxiosRequestConfig) {
+        return StoreleadsUtlApiFp(this.configuration).getDomainWithFilterStoreleadsUtlPostDomainByFilterPost(body, pageSize, cursor, shouldFetchNextPages, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

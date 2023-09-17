@@ -4,11 +4,13 @@ import { useCallback, useEffect, useState } from "react";
 const AutoModalNormal = ({
   modalState,
   setModalState,
+  modalClass,
   header,
   children,
 }: {
   modalState: any;
   setModalState: any;
+  modalClass?:any;
   header: any;
   children: any;
 }) => {
@@ -48,7 +50,7 @@ const AutoModalNormal = ({
   return (
     <>
       <div className="modal fade" tabIndex={-1} ref={setModalRef}>
-        <div className="modal-dialog">
+      <div className={ `modal-dialog ${modalClass??""}` }>
           <div className="modal-content">
             <div className="modal-header py-2">
               {header}

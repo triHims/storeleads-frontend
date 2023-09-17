@@ -5,6 +5,8 @@ import {
   EmailApi,
   AuthApi,
   WebhookWorkflowsApi,
+  ProximityJobsApi,
+
 } from "./api";
 
 import axios from "axios";
@@ -33,6 +35,7 @@ export let emailApi = new EmailApi(null, BASE_PATH, axios);
 export let authApi = new AuthApi();
 export let authApiWithToken = new AuthApi(null, BASE_PATH, axios);
 export let webhookWorkflowsApi = new WebhookWorkflowsApi(null, BASE_PATH, axios);
+export let proximityJobApi = new ProximityJobsApi(null, BASE_PATH, axios);
 
 export interface ErrorOb {
   type: string;
