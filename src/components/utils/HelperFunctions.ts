@@ -62,7 +62,6 @@ export function transformStoreleadsFilters(inputDict) {
 		outputObj["f:ermax"] = Math.ceil(salesMax)
 	}
 	if (inputDict.employee_count) {
-		debugger;
 		let empCnt = inputDict.employee_count
 		let empCntMin = empCnt * 0.9
 		let empCntMax = empCnt * 1.1

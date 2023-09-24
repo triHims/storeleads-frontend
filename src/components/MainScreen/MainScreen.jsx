@@ -12,7 +12,7 @@ const MainScreenContainer = () => {
         <div className="col-2">
           <JobsSideBar />
         </div>
-        <div className={`${styles.gptBG} col`}>
+        <div className={`${styles.gptBG} col overflow-auto h-100`}>
           <Outlet />
         </div>
       </div>

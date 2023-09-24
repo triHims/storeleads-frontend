@@ -129,6 +129,8 @@ async function storeleadsDomainDataHelper(domainObj) {
 		estimated_sales: domain["estimated_sales"],
 		employee_count: domain["employee_count"],
 		platform: domain["platform"],
+		technologies: domain?.technologies?.filter(r => !!r.name).map(r => r.name).join(","),
+		apps: domain?.apps?.filter(r => !!r.name && !!r.platform).map(r => `${r.platform}.${r.name}`).join(","),
 	}
 
 	if (domain["country_code"]) {
@@ -266,9 +268,10 @@ const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 				{/* Display selected fields */}
 				{selectedFields.map((r, index) => (
 					<li key={index + 409} className="list-group-item d-flex justify-content-between align-items-start">
-						<div className="ms-2 me-auto">
+						<div className="ms-2 me-auto overflow-auto">
 							<div className="fw-bold">{r}</div>
-							{details[r]}
+							<div>{details[r]}</div>
+							
 						</div>
 						<span className="btn p-0 mx-1 text-danger" onClick={() => { deleteDetail(r) }}>
 							<AiFillDelete />
