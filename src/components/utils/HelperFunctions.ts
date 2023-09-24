@@ -76,6 +76,12 @@ export function transformStoreleadsFilters(inputDict) {
 	if (inputDict.country_code) {
 		outputObj["f:cc"] = inputDict.country_code
 	}
+	if (inputDict.technologies) {
+		outputObj["f:tech"] = inputDict.technologies
+	}
+	if (inputDict.apps) {
+		outputObj["f:an"] = inputDict.apps
+	}
 
 	if (inputDict.keyword) {
 		outputObj["q"] = inputDict.keyword
@@ -113,6 +119,12 @@ export function reverseTransformStoreleadsFilters(outputDict) {
 
 	if (outputDict.q) {
 		inputDict.keyword = outputDict.q;
+	}
+	if (outputDict["f:tech"]) {
+		inputDict.technologies = outputDict["f:tech"]
+	}
+	if (outputDict["f:an"]) {
+		inputDict.appps = outputDict["f:an"]
 	}
 
 	return inputDict;

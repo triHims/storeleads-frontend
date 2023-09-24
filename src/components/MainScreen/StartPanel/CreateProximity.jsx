@@ -130,7 +130,7 @@ async function storeleadsDomainDataHelper(domainObj) {
 		employee_count: domain["employee_count"],
 		platform: domain["platform"],
 		technologies: domain?.technologies?.filter(r => !!r.name).map(r => r.name).join(","),
-		apps: domain?.apps?.filter(r => !!r.name && !!r.platform).map(r => `${r.platform}.${r.name}`).join(","),
+		apps: domain?.apps?.filter(r => !!r.token && !!r.platform).map(r => `${r.platform}.${r.token}`).join(","),
 	}
 
 	if (domain["country_code"]) {
