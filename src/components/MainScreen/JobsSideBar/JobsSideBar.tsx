@@ -206,7 +206,7 @@ const SideBarDataBuilder = ({ dataType }) => {
 			populateJobs(setJobList, navigate);
 	}, [refresh]);
 
-	return <>{jobsList}</>;
+  return <div className="overflow-scroll overflow-y-scroll" style={{minHeight:"0px",maxHeight:"70vh"}}>{jobsList}</div>;
 };
 
 const CreateWorkflowButton = () => {
@@ -264,7 +264,7 @@ const WebhooksViewSide = () => {
 	return (
 		<>
 			<h5 className="fw-bold">Previous Webhooks</h5>
-			<div className="ps-2 overflow-scroll" style={localStyles}>
+			<div className="ps-2">
 				<SideBarDataBuilder dataType="WEBHOOKS" />
 			</div>
 		</>
@@ -320,7 +320,7 @@ const JobsSideBar = () => {
 				</div>
 			</div>
 
-			<div className={`container mb-5`}>
+	    <div className={`container mb-2 overflow-auto overflow-y-scroll`} style={{maxHeight:"20vh"}}>
 				<CreateJobButton />
 				<CreateWorkflowButton />
 				<HomeButton />
