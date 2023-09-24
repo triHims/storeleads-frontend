@@ -192,6 +192,15 @@ const populateJobs = async (setList, navigateHandle) => {
 	setList(locJobList);
 };
 
+const getHeight = () => {
+	if (window.innerHeight > 800) {
+		return "70vh"
+	} else if (window.innerHeight > 500) {
+		return "50vh"
+	} else {
+		return "20vh"
+	}
+}
 const SideBarDataBuilder = ({ dataType }) => {
 	const [jobsList, setJobList] = useState([]);
 	let navigate = useNavigate();
@@ -206,7 +215,7 @@ const SideBarDataBuilder = ({ dataType }) => {
 			populateJobs(setJobList, navigate);
 	}, [refresh]);
 
-  return <div className="overflow-scroll overflow-y-scroll" style={{minHeight:"0px",maxHeight:"70vh"}}>{jobsList}</div>;
+	return <div className="scrollBar" style={{minHeight:"0px",maxHeight:getHeight(),overflowX:"hidden",overflowY:"auto"}}>{jobsList}</div>;
 };
 
 const CreateWorkflowButton = () => {
@@ -320,7 +329,7 @@ const JobsSideBar = () => {
 				</div>
 			</div>
 
-	    <div className={`container mb-2 overflow-auto overflow-y-scroll`} style={{maxHeight:"20vh"}}>
+			<div className={`container mb-2  scrollBar`} style={{ maxHeight: "20vh", overflowX: "hidden", overflowY: "auto" }}>
 				<CreateJobButton />
 				<CreateWorkflowButton />
 				<HomeButton />
