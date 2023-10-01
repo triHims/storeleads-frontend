@@ -1,15 +1,17 @@
 import { useState, useEffect, useMemo, useContext } from "react";
-import { AiFillDelete } from "react-icons/ai";
+import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { useInput } from "../../../hooks/useInput";
 import { proximityJobApi, storeleadsUtl, processError } from "../../servicecalls/serviceApi";
 import AutoModalNormal from "../../sharedComponents/AutoModalNormal";
 import styles from "../mainscreen.module.css";
 import { ReactiveLabel } from "./ReactiveLabel";
 import { breakStringByDelim, verifyEmailIds, transformStoreleadsFilters, reverseTransformStoreleadsFilters } from "../../utils/HelperFunctions";
+import { Button, Modal } from "react-bootstrap";
 
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { MainScreenContext } from "../MainScreen";
 import { ApolloPreviewModal, fetchDataFromApolloWithDomainFilter } from "./ApolloPreviewModal";
+import { curatedAppsFilterList, curatedTechnologyFilterList } from "../../utils/AppTechnologyFilter";
 
 export async function getProximityDataById({ params }) {
 	//This method is being used by the router to get ProximityData
@@ -129,8 +131,8 @@ async function storeleadsDomainDataHelper(domainObj) {
 		estimated_sales: domain["estimated_sales"],
 		employee_count: domain["employee_count"],
 		platform: domain["platform"],
-		technologies: domain?.technologies?.filter(r => !!r.name).map(r => r.name).join(","),
-		apps: domain?.apps?.filter(r => !!r.token && !!r.platform).map(r => `${r.platform}.${r.token}`).join(","),
+		technologies: domain?.technologies?.filter(r => !!r.name && curatedTechnologyFilterList.has(r.name?.trim())).map(r => r.name),
+		apps: domain?.apps?.filter(r => !!r.token && !!r.platform && curatedAppsFilterList.has(r?.token?.trim())).map(r => `${r.platform}.${r.token}`),
 	}
 
 	if (domain["country_code"]) {
@@ -142,6 +144,148 @@ async function storeleadsDomainDataHelper(domainObj) {
 
 }
 
+function setToMutableArrayState(value, hook, setHook) {
+	if (!value || !setHook)
+		return
+
+	if (hook.includes(value)) {
+		return
+	}
+
+	setHook(old => {
+		return [...old,
+			value
+		]
+	})
+
+}
+
+function deleteFromMutableArrayState(value, hook, setHook) {
+	if (!value || !setHook)
+		return
+
+	if (!hook.includes(value)) {
+		return
+	}
+
+	setHook(old => {
+		let temp = old.filter(r => r !== value)
+		return [...temp]
+	})
+}
+const HandleAppsTechnology = ({ details, setFields }) => {
+	const [appsList, setAppsList] = useState([])
+	const [technologiesList, setTechnologiesList] = useState([])
+	const [visible, setVisible] = useState(false)
+
+
+
+	useEffect(() => {
+		if (details["apps"]) {
+			setAppsList(details["apps"])
+		} else {
+			setAppsList([])
+		}
+		if (details["technologies"]) {
+			setTechnologiesList(details["technologies"])
+		} else {
+			setTechnologiesList([])
+		}
+	}, [details])
+
+
+	useEffect(() => {
+		let data = {}
+		if (appsList && appsList.length > 0) {
+			data["apps"] = appsList.join(",")
+		}
+		if (technologiesList && technologiesList.length > 0) {
+			data["technologies"] = technologiesList.join(",")
+		}
+		setFields(data)
+	}, [appsList, technologiesList])
+	// Now display the checkbox for selection of various items
+
+
+	return (<>
+		<li className="list-group-item d-flex justify-content-between align-items-start">
+			<div className="ms-2 me-auto overflow-auto">
+				<div className="fw-bold">Apps</div>
+				<div>{[...appsList, ...technologiesList].join(", ")}</div>
+
+			</div>
+			<span className="btn p-0 mx-1 text-danger" onClick={() => { setVisible(true) }}>
+				<AiFillEdit />
+
+			</span>
+		</li>
+		<Modal show={visible} onHide={() => { setVisible(false) }}>
+			<Modal.Header closeButton>
+				<Modal.Title className={`table ${styles.tableFontColor}`}>Select Apps</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				< div className="form-check">
+					{
+						[...details["apps"] ?? []].map((items, index) => {
+
+							return (
+								<div>
+									<input className="form-check-input" type="checkbox" value="" id={`flexCheckApp${index}`}
+										onChange={(event) => {
+											if (event.target.checked) {
+												setToMutableArrayState(items, appsList, setAppsList)
+											} else {
+												deleteFromMutableArrayState(items, appsList, setAppsList)
+											}
+										}}
+										checked={appsList.includes(items)}
+									/>
+									<label className={`form-check-label ${styles.tableFontColor}`} for={`flexCheckApp${index}`}>
+										{items}
+									</label>
+								</div>
+							)
+
+						})
+
+
+					}
+					{[...details["technologies"] ?? []].map((items, index) => {
+
+						return (
+							<div>
+								<input className="form-check-input" type="checkbox" value="" id={`flexCheckTech${index}`}
+									onChange={(event) => {
+										console.log(event.target.checked)
+										if (event.target.checked) {
+											setToMutableArrayState(items, technologiesList, setTechnologiesList)
+										} else {
+											deleteFromMutableArrayState(items, technologiesList, setTechnologiesList)
+										}
+									}}
+									checked={technologiesList.includes(items)}
+								/>
+								<label className={`form-check-label ${styles.tableFontColor}`} for={`flexCheckTech${index}`}>
+									{items}
+								</label>
+							</div>
+						)
+
+					})
+
+
+					}
+
+				</div>
+
+			</Modal.Body>
+		</Modal>
+	</>
+
+	)
+
+}
+
 const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 	// details contains details fetched from domain through helper
 	const [details, setDetails] = useState({})
@@ -149,6 +293,10 @@ const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 	const [selectedFields, setSelectedFields] = useState([])
 	// Priority Details contains the details that are to be displayed permanantly
 	const priorityDetails = new Set(["categories", "platform", "country_code"])
+
+	//Some keys need to be handled with custom handler
+	const customHandleDetails = new Set(["technologies", "apps"])
+	const [customHandleAppsTechVals, setCustomHandleAppsTechVals] = useState({})
 
 	useEffect(() => {
 		if (!domainData || Object.keys(domainData).length === 0) {
@@ -158,9 +306,9 @@ const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 			.then(transformedData => {
 				setDetails(transformedData)
 				if (transformedData && Object.keys(transformedData).length) {
-					let selected = Object.keys(transformedData).filter(key => !priorityDetails.has(key) && !!transformedData[key]
-					)
-					console.log(selected)
+					let selected = Object.keys(transformedData).filter(key => !priorityDetails.has(key)
+						&& !customHandleDetails.has(key)
+						&& !!transformedData[key])
 					setSelectedFields(selected)
 				}
 			})
@@ -191,12 +339,15 @@ const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 
 
 
-			selectedFieldValues(data)
+
+			selectedFieldValues({
+				...data,
+				...customHandleAppsTechVals
+			})
 
 		}
 
-	}, [details, selectedFields])
-
+	}, [details, selectedFields, customHandleAppsTechVals])
 
 	const insertDetail = (detailKey) => {
 		if (!detailKey)
@@ -226,13 +377,17 @@ const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 	return (
 		<div>
 			<div className="card" style={{ backgroundColor: "rgb(102,102,102)" }}>
+				{/* Drop Down*/}
 				<div className="card-body">
 					<h5 className="card-title">Select Fields</h5>
 					<div>
-						<select className="form-select mb-3" aria-label="Select Fetched Fields" placeholder="Select Available Fields" onBlur={(obj) => { insertDetail(obj.target.value) }} onChange={(obj) => { insertDetail(obj.target.value) }}>
-							<option disabled selected value>Selected Fetched Fields</option>
+						<select className="form-select mb-3" aria-label="Select Fetched Fields"
+							placeholder="Select Available Fields"
+							onBlur={(obj) => setToMutableArrayState(obj.target.value,selectedFields,setSelectedFields)}
+							onChange={(obj) => setToMutableArrayState(obj.target.value,selectedFields,setSelectedFields)}>
+							<option disabled selected>Selected Fetched Fields</option>
 							{Object.entries(details)
-								.filter(([key, value]) => !priorityDetails.has(key))
+								.filter(([key, value]) => !priorityDetails.has(key) && !customHandleDetails.has(key))
 								.filter(([key, value]) => !!key && !!value)
 								.map(([key, value]) => (<option key={key} value={key}>{key}</option>
 								))}
@@ -271,15 +426,16 @@ const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 						<div className="ms-2 me-auto overflow-auto">
 							<div className="fw-bold">{r}</div>
 							<div>{details[r]}</div>
-							
+
 						</div>
-						<span className="btn p-0 mx-1 text-danger" onClick={() => { deleteDetail(r) }}>
+					    <span className="btn p-0 mx-1 text-danger" onClick={(obj) => deleteFromMutableArrayState(r,selectedFields,setSelectedFields)}>
 							<AiFillDelete />
 
 						</span>
 					</li>
 
 				))}
+				<HandleAppsTechnology details={details} setFields={setCustomHandleAppsTechVals} />
 			</ul>
 		</div>
 
