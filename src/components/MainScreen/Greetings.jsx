@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import flowIcon from "../../assets/icons8-process-64.png";
-import { ROUTER_JOBS_CREATE, ROUTER_PROXIMITY_CREATE, ROUTER_WORKFLOW_CREATE } from "../utils/Constants";
+import { ENABLE_JOBS_COMPONENT, ROUTER_JOBS_CREATE, ROUTER_PROXIMITY_CREATE, ROUTER_WORKFLOW_CREATE } from "../utils/Constants";
 export const Greetings = () => {
   const navigate = useNavigate();
   return (
@@ -18,6 +18,7 @@ export const Greetings = () => {
 		type="button"
 		className="btn btn-success mx-2"
 		onClick={() => navigate(ROUTER_JOBS_CREATE)}
+		hidden = {!ENABLE_JOBS_COMPONENT}
 	    >
 		Create a Job
 	    </button>

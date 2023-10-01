@@ -15,10 +15,13 @@ export const ROUTER_PROXIMITY_HISTORY="/proximity/job-history"
 
 
 
-
-
-
 export const BACKEND_BASE_PATH = process.env.REACT_APP_BACKEND_PATH
 
 
 export const BACKEND_WEBHOOK_PREFIX = "/external/webhook"
+
+
+
+
+
+export const ENABLE_JOBS_COMPONENT = ( process.env.REACT_APP_ENABLE_JOBS_COMPONENT.toLowerCase() === "true" )

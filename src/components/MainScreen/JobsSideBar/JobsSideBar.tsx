@@ -315,9 +315,10 @@ const JobsSideBar = () => {
 							className="mb-3"
 							fill
 						>
-							<Tab eventKey="job" title="Jobs">
+						{ENABLE_JOBS_COMPONENT && (<Tab eventKey="job" title="Jobs">
 								<JobsViewSide />
-							</Tab>
+						</Tab>)}
+
 							<Tab eventKey="webhook" title="Webhook">
 								<WebhooksViewSide />
 							</Tab>
@@ -330,7 +331,7 @@ const JobsSideBar = () => {
 			</div>
 
 			<div className={`container mb-2  scrollBar`} style={{ maxHeight: "20vh", overflowX: "hidden", overflowY: "auto" }}>
-				<CreateJobButton />
+				{ENABLE_JOBS_COMPONENT && <CreateJobButton />}
 				<CreateWorkflowButton />
 				<HomeButton />
 				<UserCard />
