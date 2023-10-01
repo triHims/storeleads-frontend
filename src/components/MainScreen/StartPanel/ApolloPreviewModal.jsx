@@ -155,7 +155,7 @@ export const ApolloPreviewModal = ({
 				onClick={showModal}
 				disabled={!isEnabled}
 			>
-				Fetch Data from Apollo
+				Fetch People
 			</button>
 
 			<div className="modal fade" tabIndex="-1" ref={modalRef}>
@@ -167,7 +167,7 @@ export const ApolloPreviewModal = ({
 								id="exampleModalLabel"
 								style={tableFontColor}
 							>
-								Apollo Preview Data
+								People Preview Data
 							</h5>
 							<button
 								type="button"

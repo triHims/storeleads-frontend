@@ -417,7 +417,7 @@ const CreateNewFlow = ({ editingMode }) => {
 					<ReactiveLabel {...labelStoreLeadsVerify} />
 				</div>
 				<div className="mb-3">
-					<label>Add Apollo Persona</label>
+					<label>Add Persona</label>
 					<div class="input-group">
 						<input {...bindPersonaList} type="text" class="form-control" />
 					</div>

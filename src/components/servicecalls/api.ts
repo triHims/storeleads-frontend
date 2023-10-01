@@ -317,63 +317,150 @@ export interface ProximityJob {
 /**
  * 
  * @export
- * @interface ProximityJobDB
+ * @interface ProximityJobDBID
  */
-export interface ProximityJobDB {
+export interface ProximityJobDBID {
     /**
      * 
      * @type {string}
-     * @memberof ProximityJobDB
+     * @memberof ProximityJobDBID
      */
     'sourceDomain': string;
     /**
      * 
      * @type {string}
-     * @memberof ProximityJobDB
+     * @memberof ProximityJobDBID
      */
     'jobName'?: string;
     /**
      * 
      * @type {Array<string>}
-     * @memberof ProximityJobDB
+     * @memberof ProximityJobDBID
      */
     'email_id_list'?: Array<string>;
     /**
      * 
      * @type {Array<string>}
-     * @memberof ProximityJobDB
+     * @memberof ProximityJobDBID
      */
     'persona'?: Array<string>;
     /**
      * 
      * @type {object}
-     * @memberof ProximityJobDB
+     * @memberof ProximityJobDBID
      */
     'filter': object;
     /**
      * 
      * @type {string}
-     * @memberof ProximityJobDB
+     * @memberof ProximityJobDBID
      */
     'created_by'?: string;
     /**
      * 
      * @type {string}
-     * @memberof ProximityJobDB
+     * @memberof ProximityJobDBID
      */
     'created_date'?: string;
     /**
      * 
      * @type {string}
-     * @memberof ProximityJobDB
+     * @memberof ProximityJobDBID
      */
     'updated_by'?: string;
     /**
      * 
      * @type {string}
-     * @memberof ProximityJobDB
+     * @memberof ProximityJobDBID
      */
     'updated_date'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJobDBID
+     */
+    '_id'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ProximityJobRunHistory
+ */
+export interface ProximityJobRunHistory {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJobRunHistory
+     */
+    'jobName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJobRunHistory
+     */
+    '_id'?: string;
+    /**
+     * 
+     * @type {Array<RunHistory>}
+     * @memberof ProximityJobRunHistory
+     */
+    'run_history': Array<RunHistory>;
+}
+/**
+ * 
+ * @export
+ * @interface ProximityJobUpdate
+ */
+export interface ProximityJobUpdate {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJobUpdate
+     */
+    'sourceDomain'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProximityJobUpdate
+     */
+    'jobName'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ProximityJobUpdate
+     */
+    'email_id_list'?: Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ProximityJobUpdate
+     */
+    'persona'?: Array<string>;
+    /**
+     * 
+     * @type {object}
+     * @memberof ProximityJobUpdate
+     */
+    'filter': object;
+}
+/**
+ * 
+ * @export
+ * @interface RunHistory
+ */
+export interface RunHistory {
+    /**
+     * 
+     * @type {number}
+     * @memberof RunHistory
+     */
+    'datafetched': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof RunHistory
+     */
+    'run_date': string;
 }
 /**
  * 
@@ -2803,17 +2890,58 @@ export const ProximityJobsApiAxiosParamCreator = function (configuration?: Confi
         },
         /**
          * 
-         * @summary Update Proximity Job By Id
+         * @summary Get Proximity Job Run Details By Id
          * @param {string} jobId 
-         * @param {ProximityJobDB} proximityJobDB 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateProximityJobByIdProximityIdPut: async (jobId: string, proximityJobDB: ProximityJobDB, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getProximityJobRunDetailsByIdProximityRunHistoryGet: async (jobId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'jobId' is not null or undefined
+            assertParamExists('getProximityJobRunDetailsByIdProximityRunHistoryGet', 'jobId', jobId)
+            const localVarPath = `/proximity/run_history`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", ["user"], configuration)
+
+            if (jobId !== undefined) {
+                localVarQueryParameter['job_id'] = jobId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Update Proximity Job By Id
+         * @param {string} jobId 
+         * @param {ProximityJobUpdate} proximityJobUpdate 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateProximityJobByIdProximityIdPut: async (jobId: string, proximityJobUpdate: ProximityJobUpdate, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'jobId' is not null or undefined
             assertParamExists('updateProximityJobByIdProximityIdPut', 'jobId', jobId)
-            // verify required parameter 'proximityJobDB' is not null or undefined
-            assertParamExists('updateProximityJobByIdProximityIdPut', 'proximityJobDB', proximityJobDB)
+            // verify required parameter 'proximityJobUpdate' is not null or undefined
+            assertParamExists('updateProximityJobByIdProximityIdPut', 'proximityJobUpdate', proximityJobUpdate)
             const localVarPath = `/proximity/id`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2841,7 +2969,7 @@ export const ProximityJobsApiAxiosParamCreator = function (configuration?: Confi
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(proximityJobDB, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(proximityJobUpdate, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2897,7 +3025,7 @@ export const ProximityJobsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAllJobsProximityAllGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProximityJobDB>>> {
+        async getAllJobsProximityAllGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProximityJobDBID>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllJobsProximityAllGet(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -2907,7 +3035,7 @@ export const ProximityJobsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getJobsForCurrentUserProximityAllForUserGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProximityJobDB>>> {
+        async getJobsForCurrentUserProximityAllForUserGet(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProximityJobDBID>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getJobsForCurrentUserProximityAllForUserGet(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -2918,20 +3046,31 @@ export const ProximityJobsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getProximityJobByIdProximityIdGet(jobId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async getProximityJobByIdProximityIdGet(jobId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProximityJobDBID>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getProximityJobByIdProximityIdGet(jobId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get Proximity Job Run Details By Id
+         * @param {string} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getProximityJobRunDetailsByIdProximityRunHistoryGet(jobId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProximityJobRunHistory>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProximityJobRunDetailsByIdProximityRunHistoryGet(jobId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary Update Proximity Job By Id
          * @param {string} jobId 
-         * @param {ProximityJobDB} proximityJobDB 
+         * @param {ProximityJobUpdate} proximityJobUpdate 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateProximityJobByIdProximityIdPut(jobId: string, proximityJobDB: ProximityJobDB, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProximityJobByIdProximityIdPut(jobId, proximityJobDB, options);
+        async updateProximityJobByIdProximityIdPut(jobId: string, proximityJobUpdate: ProximityJobUpdate, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProximityJobByIdProximityIdPut(jobId, proximityJobUpdate, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -2980,7 +3119,7 @@ export const ProximityJobsApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAllJobsProximityAllGet(options?: any): AxiosPromise<Array<ProximityJobDB>> {
+        getAllJobsProximityAllGet(options?: any): AxiosPromise<Array<ProximityJobDBID>> {
             return localVarFp.getAllJobsProximityAllGet(options).then((request) => request(axios, basePath));
         },
         /**
@@ -2989,7 +3128,7 @@ export const ProximityJobsApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getJobsForCurrentUserProximityAllForUserGet(options?: any): AxiosPromise<Array<ProximityJobDB>> {
+        getJobsForCurrentUserProximityAllForUserGet(options?: any): AxiosPromise<Array<ProximityJobDBID>> {
             return localVarFp.getJobsForCurrentUserProximityAllForUserGet(options).then((request) => request(axios, basePath));
         },
         /**
@@ -2999,19 +3138,29 @@ export const ProximityJobsApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getProximityJobByIdProximityIdGet(jobId: string, options?: any): AxiosPromise<any> {
+        getProximityJobByIdProximityIdGet(jobId: string, options?: any): AxiosPromise<ProximityJobDBID> {
             return localVarFp.getProximityJobByIdProximityIdGet(jobId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get Proximity Job Run Details By Id
+         * @param {string} jobId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProximityJobRunDetailsByIdProximityRunHistoryGet(jobId: string, options?: any): AxiosPromise<ProximityJobRunHistory> {
+            return localVarFp.getProximityJobRunDetailsByIdProximityRunHistoryGet(jobId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Update Proximity Job By Id
          * @param {string} jobId 
-         * @param {ProximityJobDB} proximityJobDB 
+         * @param {ProximityJobUpdate} proximityJobUpdate 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateProximityJobByIdProximityIdPut(jobId: string, proximityJobDB: ProximityJobDB, options?: any): AxiosPromise<object> {
-            return localVarFp.updateProximityJobByIdProximityIdPut(jobId, proximityJobDB, options).then((request) => request(axios, basePath));
+        updateProximityJobByIdProximityIdPut(jobId: string, proximityJobUpdate: ProximityJobUpdate, options?: any): AxiosPromise<object> {
+            return localVarFp.updateProximityJobByIdProximityIdPut(jobId, proximityJobUpdate, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -3059,7 +3208,7 @@ export interface ProximityJobsApiInterface {
      * @throws {RequiredError}
      * @memberof ProximityJobsApiInterface
      */
-    getAllJobsProximityAllGet(options?: AxiosRequestConfig): AxiosPromise<Array<ProximityJobDB>>;
+    getAllJobsProximityAllGet(options?: AxiosRequestConfig): AxiosPromise<Array<ProximityJobDBID>>;
 
     /**
      * 
@@ -3068,7 +3217,7 @@ export interface ProximityJobsApiInterface {
      * @throws {RequiredError}
      * @memberof ProximityJobsApiInterface
      */
-    getJobsForCurrentUserProximityAllForUserGet(options?: AxiosRequestConfig): AxiosPromise<Array<ProximityJobDB>>;
+    getJobsForCurrentUserProximityAllForUserGet(options?: AxiosRequestConfig): AxiosPromise<Array<ProximityJobDBID>>;
 
     /**
      * 
@@ -3078,18 +3227,28 @@ export interface ProximityJobsApiInterface {
      * @throws {RequiredError}
      * @memberof ProximityJobsApiInterface
      */
-    getProximityJobByIdProximityIdGet(jobId: string, options?: AxiosRequestConfig): AxiosPromise<any>;
+    getProximityJobByIdProximityIdGet(jobId: string, options?: AxiosRequestConfig): AxiosPromise<ProximityJobDBID>;
+
+    /**
+     * 
+     * @summary Get Proximity Job Run Details By Id
+     * @param {string} jobId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApiInterface
+     */
+    getProximityJobRunDetailsByIdProximityRunHistoryGet(jobId: string, options?: AxiosRequestConfig): AxiosPromise<ProximityJobRunHistory>;
 
     /**
      * 
      * @summary Update Proximity Job By Id
      * @param {string} jobId 
-     * @param {ProximityJobDB} proximityJobDB 
+     * @param {ProximityJobUpdate} proximityJobUpdate 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProximityJobsApiInterface
      */
-    updateProximityJobByIdProximityIdPut(jobId: string, proximityJobDB: ProximityJobDB, options?: AxiosRequestConfig): AxiosPromise<object>;
+    updateProximityJobByIdProximityIdPut(jobId: string, proximityJobUpdate: ProximityJobUpdate, options?: AxiosRequestConfig): AxiosPromise<object>;
 
 }
 
@@ -3172,15 +3331,27 @@ export class ProximityJobsApi extends BaseAPI implements ProximityJobsApiInterfa
 
     /**
      * 
-     * @summary Update Proximity Job By Id
+     * @summary Get Proximity Job Run Details By Id
      * @param {string} jobId 
-     * @param {ProximityJobDB} proximityJobDB 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ProximityJobsApi
      */
-    public updateProximityJobByIdProximityIdPut(jobId: string, proximityJobDB: ProximityJobDB, options?: AxiosRequestConfig) {
-        return ProximityJobsApiFp(this.configuration).updateProximityJobByIdProximityIdPut(jobId, proximityJobDB, options).then((request) => request(this.axios, this.basePath));
+    public getProximityJobRunDetailsByIdProximityRunHistoryGet(jobId: string, options?: AxiosRequestConfig) {
+        return ProximityJobsApiFp(this.configuration).getProximityJobRunDetailsByIdProximityRunHistoryGet(jobId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update Proximity Job By Id
+     * @param {string} jobId 
+     * @param {ProximityJobUpdate} proximityJobUpdate 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProximityJobsApi
+     */
+    public updateProximityJobByIdProximityIdPut(jobId: string, proximityJobUpdate: ProximityJobUpdate, options?: AxiosRequestConfig) {
+        return ProximityJobsApiFp(this.configuration).updateProximityJobByIdProximityIdPut(jobId, proximityJobUpdate, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

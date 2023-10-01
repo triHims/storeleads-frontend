@@ -27,6 +27,23 @@ export async function getProximityDataById({ params }) {
 
 	return response?.data ? response.data : {};
 }
+export async function getProximityRunHistory({ params }) {
+	//This method is being used by the router to get ProximityData
+	let response = {};
+	try {
+	    let data = await getProximityDataById({ params })
+	    if(data._id){
+		response = await proximityJobApi.getProximityJobRunDetailsByIdProximityRunHistoryGet(data._id)
+	    }
+	} catch (e) {
+		console.log(e);
+		let errorRes = processError(e);
+		console.error(errorRes);
+		return errorRes;
+	}
+
+	return response?.data ? response.data : {};
+}
 
 async function saveProximityJob(sourceDomain, jobName, emails, personas, filter) {
 	let email_id_list = breakStringByDelim(emails)
@@ -174,6 +191,8 @@ function deleteFromMutableArrayState(value, hook, setHook) {
 	})
 }
 const HandleAppsTechnology = ({ details, setFields }) => {
+
+
 	const [appsList, setAppsList] = useState([])
 	const [technologiesList, setTechnologiesList] = useState([])
 	const [visible, setVisible] = useState(false)
@@ -435,7 +454,11 @@ const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 					</li>
 
 				))}
-				<HandleAppsTechnology details={details} setFields={setCustomHandleAppsTechVals} />
+			    {
+				(( !!details["apps"] && !!details["apps"].length )|| ( !!details["technologies"] && !!details["technologies"].length  )) && (
+				    <HandleAppsTechnology details={details} setFields={setCustomHandleAppsTechVals} />
+				)
+			    }
 			</ul>
 		</div>
 
@@ -824,7 +847,7 @@ const CreateProximity = ({ editingMode }) => {
 						</div>
 
 						<div className="mb-3">
-							<label>Add Apollo Persona</label>
+							<label>Add Persona</label>
 							<div class="input-group">
 								<input {...bindPersonaList} type="text" class="form-control" />
 							</div>

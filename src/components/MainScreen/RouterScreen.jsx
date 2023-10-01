@@ -8,7 +8,7 @@ import WebhookJobHistory, { getWebhookDataById, getWebhookDetailsAndHistory } fr
 import { MainScreen } from "./MainScreen";
 import CreateNewFlow from "./StartPanel/CreateNewFlow";
 import CreateNewWorkflow from "./StartPanel/CreateNewWebhook";
-import CreateProximity, { getProximityDataById } from "./StartPanel/CreateProximity";
+import CreateProximity, { getProximityDataById, getProximityRunHistory } from "./StartPanel/CreateProximity";
 const router = createBrowserRouter(
 	[
 		{
@@ -79,7 +79,7 @@ const router = createBrowserRouter(
 						{
 							path: "job-history/:id",
 							element: <ProximityJobHistory/>,
-							loader: getProximityDataById
+							loader: getProximityRunHistory
 						}
 
 					]

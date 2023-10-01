@@ -14,6 +14,20 @@
     background-color: #282828;
 }
 
+.custom__accordion {
+    color: #fff;
+    background-color: #292b31;
+}
+.custom__accordion_button:not(.collapsed) {
+    color: #fff;
+    background-color: #292b31;
+}
+.custom__accordion_button {
+    color: #fff;
+}
+.color_black {
+    color: black;
+}
 .noOverFlowText {
     overflow: hidden;
       text-overflow: ellipsis;
