@@ -1,6 +1,7 @@
 import React, { useRef, useState, useMemo } from "react";
 import { Modal } from "bootstrap/dist/js/bootstrap.esm.min";
 import { storeleadsUtl, apolloApiUtl } from "../../servicecalls/serviceApi";
+import { transformStoreleadsFilters } from "../../utils/HelperFunctions";
 
 const tableFontColor = {
 	color: "black",
@@ -52,7 +53,9 @@ const TablePrev = ({ tableModel }) => {
 };
 
 export async function fetchDataFromApolloWithDomainFilter(domainFilter, personaList) {
-	let response = await storeleadsUtl.getDomainWithFilterStoreleadsUtlPostDomainByFilterPost(domainFilter, 20);
+	let response = await storeleadsUtl.getDomainWithFilterStoreleadsUtlPostDomainByFilterPost(
+		transformStoreleadsFilters(domainFilter)
+		, 20);
 	console.log(personaList);
 
 	let tableDataArr = response?.data?.data ? response.data.data : [];
@@ -130,7 +133,7 @@ export const ApolloPreviewModal = ({
 		});
 
 		setIsLoading(true);
-	    console.log(dataFunction)
+		console.log(dataFunction)
 		dataFunction(convertSemiColonList(personaList)).then(
 			(data) => {
 				setTableModel(data);
