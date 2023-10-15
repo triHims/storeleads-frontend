@@ -115,7 +115,7 @@ async function fetchDomainsFromFilter(filterObj) {
 		console.log(e);
 		let errorRes = processError(e);
 		console.error(errorRes);
-		throw new Error(errorRes);
+		throw errorRes;
 	}
 
 	console.log(response.data)
@@ -777,8 +777,8 @@ const CreateProximity = ({ editingMode }) => {
 							<div className="input-group-append">
 								<button type="button" className="btn btn-primary" onClick={loadDomainData}>
 									{isFetchButtonLoading ? (
-										<div class="spinner-border spinner-border-sm" role="status">
-											<span class="visually-hidden">Loading...</span>
+										<div className="spinner-border spinner-border-sm" role="status">
+											<span className="visually-hidden">Loading...</span>
 										</div>
 									) : "Fetch Data"}
 
@@ -848,7 +848,7 @@ const CreateProximity = ({ editingMode }) => {
 
 						<div className="mb-3">
 							<label>Add Persona</label>
-							<div class="input-group">
+							<div className="input-group">
 								<input {...bindPersonaList} type="text" class="form-control" />
 							</div>
 							<label className={`${styles.bottomHint}`}>
@@ -857,7 +857,7 @@ const CreateProximity = ({ editingMode }) => {
 						</div>
 						<div className="mb-3">
 							<label>Add Email</label>
-							<div class="input-group">
+							<div className="input-group">
 								<input {...bindEmailIds} type="text" class="form-control" />
 							</div>
 							<label className={`${styles.bottomHint}`}>
