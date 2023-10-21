@@ -12,7 +12,6 @@ import AutoModalNormal from "../../sharedComponents/AutoModalNormal";
 import { AiFillDelete } from "react-icons/ai";
 import { TiCancelOutline } from "react-icons/ti";
 import { MainScreenContext } from "../MainScreen";
-import { fetchDomainsFromFilter } from "./CreateProximity";
 
 const tableFontColor = {
 	color: "black",
