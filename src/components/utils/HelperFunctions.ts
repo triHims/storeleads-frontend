@@ -124,7 +124,7 @@ export function reverseTransformStoreleadsFilters(outputDict) {
 		inputDict.technologies = outputDict["f:tech"]
 	}
 	if (outputDict["f:an"]) {
-		inputDict.appps = outputDict["f:an"]
+		inputDict.apps = outputDict["f:an"]
 	}
 
 	return inputDict;

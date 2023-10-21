@@ -1,29 +1,46 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect, useContext} from "react";
 import { Modal } from "react-bootstrap";
 import { AiFillEdit } from "react-icons/ai";
 import { deleteFromMutableArrayState, setToMutableArrayState } from "../../../sharedComponents/StateHelpers";
 import styles from "../../mainscreen.module.css";
+import { CreateProximityContext } from "./CreateProximity";
 
-export const HandleAppsTechnology = ({ details, setFields }) => {
+export const HandleAppsTechnology = ({ details, fields,setFields }) => {
 
 
 	const [appsList, setAppsList] = useState([])
 	const [technologiesList, setTechnologiesList] = useState([])
 	const [visible, setVisible] = useState(false)
+	const {editingMode} = useContext(CreateProximityContext)
 
 
 
 	useEffect(() => {
-		if (details["apps"]) {
-			setAppsList(details["apps"])
+	    console.log(fields)
+	    if(editingMode){
+		if (fields["apps"]) {
+		    setAppsList(fields["apps"].split(","))
 		} else {
-			setAppsList([])
+		    setAppsList([])
+		}
+		if (fields["technologies"]) {
+		    setTechnologiesList(fields["technologies"].split(","))
+		} else {
+		    setTechnologiesList([])
+		}
+	    }
+	    else{
+		if (details["apps"]) {
+		    setAppsList(details["apps"])
+		} else {
+		    setAppsList([])
 		}
 		if (details["technologies"]) {
-			setTechnologiesList(details["technologies"])
+		    setTechnologiesList(details["technologies"])
 		} else {
-			setTechnologiesList([])
+		    setTechnologiesList([])
 		}
+	    }
 	}, [details])
 
 

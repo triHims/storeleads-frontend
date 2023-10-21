@@ -1,10 +1,17 @@
 import { useState, useEffect, useMemo, useContext } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { storeleadsDomainDataHelper } from "./ProximityHelper";
+import { CreateProximityContext } from "./CreateProximity";
 import { HandleAppsTechnology } from "./HandleAppsAndTechnology";
 import { deleteFromMutableArrayState, setToMutableArrayState } from "../../../sharedComponents/StateHelpers";
 
-export const FieldSelecter = ({ domainData, selectedFieldValues }) => {
+export const FieldSelecter = ({ domainData, selectedFieldValues, setSelectedFieldValues }) => {
+	// Domain Data contains data of domain fetched by API
+	// SelectedFieldValues , if editing these values are the values which were saved with the job
+	// setSelectedFieldValues sets the currently selected Values
+
+
+
 	// details contains details fetched from domain through helper
 	const [details, setDetails] = useState({})
 	// selectedFields contains details that are selected through drop down
@@ -15,11 +22,20 @@ export const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 	//Some keys need to be handled with custom handler
 	const customHandleDetails = new Set(["technologies", "apps"])
 	const [customHandleAppsTechVals, setCustomHandleAppsTechVals] = useState({})
+	const { editingMode } = useContext(CreateProximityContext)
 
 	useEffect(() => {
 		if (!domainData || Object.keys(domainData).length === 0) {
 			return
 		}
+
+		// We have 3 sources which will allow us to pick keys from "transformedData" 
+		// We will filter the data into 3 parts 
+		// 1 . PriorityDetails are fixed and cannot be changed
+		// 2. customHandleDetails are the details that require custom components 
+		// 3. selectedFields are the fields which can be either added or deleted
+		// In case of editing mode the selected fields can be set once and then moved forward accordingly
+
 		storeleadsDomainDataHelper(domainData)
 			.then(transformedData => {
 				setDetails(transformedData)
@@ -27,7 +43,20 @@ export const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 					let selected = Object.keys(transformedData).filter(key => !priorityDetails.has(key)
 						&& !customHandleDetails.has(key)
 						&& !!transformedData[key])
-					setSelectedFields(selected)
+					if (editingMode) {
+						selected = selected.filter(r => selectedFieldValues.hasOwnProperty(r))
+					}
+
+				        // set handle apps and tech if case they are set
+				    let customHandleDetailEdit = {}
+				    customHandleDetails.forEach(r=> {
+					if(selectedFieldValues[r]){
+					    customHandleDetailEdit[r] = selectedFieldValues[r]
+					}
+				    })
+				        
+				    setSelectedFields(selected)
+				    setCustomHandleAppsTechVals(customHandleDetailEdit)
 				}
 			})
 
@@ -36,6 +65,7 @@ export const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 
 	useEffect(() => {
 
+		// 
 
 		if (details && Object.keys(details).length) {
 			let data = {}
@@ -58,7 +88,7 @@ export const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 
 
 
-			selectedFieldValues({
+			setSelectedFieldValues({
 				...data,
 				...customHandleAppsTechVals
 			})
@@ -101,8 +131,8 @@ export const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 					<div>
 						<select className="form-select mb-3" aria-label="Select Fetched Fields"
 							placeholder="Select Available Fields"
-							onBlur={(obj) => setToMutableArrayState(obj.target.value,selectedFields,setSelectedFields)}
-							onChange={(obj) => setToMutableArrayState(obj.target.value,selectedFields,setSelectedFields)}>
+							onBlur={(obj) => setToMutableArrayState(obj.target.value, selectedFields, setSelectedFields)}
+							onChange={(obj) => setToMutableArrayState(obj.target.value, selectedFields, setSelectedFields)}>
 							<option disabled selected>Selected Fetched Fields</option>
 							{Object.entries(details)
 								.filter(([key, value]) => !priorityDetails.has(key) && !customHandleDetails.has(key))
@@ -146,18 +176,18 @@ export const FieldSelecter = ({ domainData, selectedFieldValues }) => {
 							<div>{details[r]}</div>
 
 						</div>
-					    <span className="btn p-0 mx-1 text-danger" onClick={(obj) => deleteFromMutableArrayState(r,selectedFields,setSelectedFields)}>
+						<span className="btn p-0 mx-1 text-danger" onClick={(obj) => deleteFromMutableArrayState(r, selectedFields, setSelectedFields)}>
 							<AiFillDelete />
 
 						</span>
 					</li>
 
 				))}
-			    {
-				(( !!details["apps"] && !!details["apps"].length )|| ( !!details["technologies"] && !!details["technologies"].length  )) && (
-				    <HandleAppsTechnology details={details} setFields={setCustomHandleAppsTechVals} />
-				)
-			    }
+				{
+					((!!details["apps"] && !!details["apps"].length) || (!!details["technologies"] && !!details["technologies"].length)) && (
+					    <HandleAppsTechnology details={details} fields={customHandleAppsTechVals} setFields={setCustomHandleAppsTechVals} />
+					)
+				}
 			</ul>
 		</div>
 
