@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext,createContext } from "react";
 import { useInput } from "../../../../hooks/useInput";
 import styles from "../../mainscreen.module.css";
-import { ReactiveLabel } from "../ReactiveLabel";
+import { ReactiveLabel, ReactiveLabelEnum } from "../ReactiveLabel";
 
 import { useLoaderData } from "react-router-dom";
 import { MainScreenContext } from "../../MainScreen";
@@ -23,14 +23,14 @@ const CreateProximity = ({ editingMode }) => {
 
 
 	const [jobName, bindJobName, resetJobName, setJobName] = useInput("");
-	const [labelJobNameVerify, setLabelJobNameVerify] = useState();
+	const [labelJobNameVerify, setLabelJobNameVerify] = useState({ hint:"", message: "" });
 	const [personaList, bindPersonaList, resetPersonaList, setPersonaList] = useInput("")
 	const [emailIds, bindEmailIds, resetEmailIds, setEmailIds] = useInput("");
-	const [labelEmailIdVerify, setlabelEmailIdVerify] = useState("");
+    const [labelEmailIdVerify, setlabelEmailIdVerify] = useState({ hint:"", message: "" });
 	const [isFetchButtonLoading, setIsFetchButtonLoading] = useState(false)
 
 
-	const [labelSaveMessage, setLabelSaveMessage] = useState();
+	const [labelSaveMessage, setLabelSaveMessage] = useState({ hint:"", message: "" });
 	const [isSavingData, setIsSavingData] = useState(false);
 
 	// get jobData
@@ -67,15 +67,15 @@ const CreateProximity = ({ editingMode }) => {
 	const isSavePossible = () => {
 	    alert()
 		return (
-			labelJobNameVerify?.hint === "SUCCESS" &&
-			labelEmailIdVerify?.hint == "SUCCESS"
+			labelJobNameVerify?.hint === ReactiveLabelEnum.success &&
+			labelEmailIdVerify?.hint == ReactiveLabelEnum.success
 		    
 		);
 	};
 
 	const isUpdatePossible = () => {
 		return (
-			labelEmailIdVerify?.hint == "SUCCESS"
+			labelEmailIdVerify?.hint == ReactiveLabelEnum.success
 		   
 		);
 	};
@@ -84,7 +84,7 @@ const CreateProximity = ({ editingMode }) => {
 		setLabelSaveMessage({ hint: "", message: "Creating Job..." });
 		saveProximityJob(domainName, jobName, emailIds, personaList, { ...selectedDomainAttributes, "keyword": keywordInput }).then(r => {
 			setLabelSaveMessage({
-				hint: "SUCCESS",
+				hint: ReactiveLabelEnum.success,
 				message: "Job successfully created",
 			})
 			resetComponent();
@@ -93,10 +93,10 @@ const CreateProximity = ({ editingMode }) => {
 			console.log(e)
 			setLabelSaveMessage({ hint: "ERROR", message: e.statusMessage });
 		})
-			.finally(f => {
+			.finally(() => {
 				setrefresh();
 				setTimeout(() => {
-					setLabelSaveMessage({ hint: "SUCCESS", message: "" });
+					setLabelSaveMessage({ hint: ReactiveLabelEnum.success, message: "" });
 				}, 30000)
 			}
 
@@ -109,7 +109,7 @@ const CreateProximity = ({ editingMode }) => {
 		setLabelSaveMessage({ hint: "", message: "Update Job..." });
 		updateProximityJob(jobData._id, emailIds, personaList, { ...selectedDomainAttributes, "keyword": keywordInput }).then(r => {
 			setLabelSaveMessage({
-				hint: "SUCCESS",
+				hint: ReactiveLabelEnum.success,
 				message: "Job successfully updated",
 			})
 		}
@@ -120,7 +120,7 @@ const CreateProximity = ({ editingMode }) => {
 			.finally(f => {
 				setrefresh();
 				setTimeout(() => {
-					setLabelSaveMessage({ hint: "SUCCESS", message: "" });
+					setLabelSaveMessage({ hint: ReactiveLabelEnum.success, message: "" });
 				}, 30000)
 			}
 
@@ -168,13 +168,13 @@ const CreateProximity = ({ editingMode }) => {
 		if (editingMode) {
 			return;
 		}
-		setLabelJobNameVerify({});
+		setLabelJobNameVerify({ hint:"", message: "" });
 		if (jobName.length >= 3) {
 			let timeout = setTimeout(() => {
 				setLabelJobNameVerify({ hint: "", message: "Verifying..." });
 				fetchJobName(jobName).then((responseBody) => {
 					setLabelJobNameVerify({
-						hint: "SUCCESS",
+						hint: ReactiveLabelEnum.success,
 						message: "Valid Job Name",
 					});
 				}).catch(r => {
@@ -193,12 +193,12 @@ const CreateProximity = ({ editingMode }) => {
 				message: "Length should be greater than 2",
 			});
 		} else {
-			setLabelJobNameVerify({});
+			setLabelJobNameVerify({ hint:"", message: "" });
 		}
 	}, [jobName]);
 	//Email Id verification
 	useEffect(() => {
-		setlabelEmailIdVerify({});
+		setlabelEmailIdVerify({ hint:"", message: "" });
 		if (emailIds) {
 			let timeout = setTimeout(() => {
 				setlabelEmailIdVerify({ hint: "", message: "Verifying..." });
@@ -210,7 +210,7 @@ const CreateProximity = ({ editingMode }) => {
 						});
 					} else {
 						setlabelEmailIdVerify({
-							hint: "SUCCESS",
+							hint: ReactiveLabelEnum.success,
 							message: "",
 						});
 					}
@@ -220,7 +220,7 @@ const CreateProximity = ({ editingMode }) => {
 				clearTimeout(timeout);
 			};
 		} else {
-			setlabelEmailIdVerify({});
+			setlabelEmailIdVerify({ hint:"", message: "" });
 		}
 	}, [emailIds, editingMode]);
 

@@ -1,5 +1,4 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { MainScreen } from "./components/MainScreen/MainScreen";
 import { RouterScreen } from "./components/MainScreen/RouterScreen";
 
 const bodyContainer = {

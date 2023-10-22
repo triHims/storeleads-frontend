@@ -5,12 +5,12 @@ export enum ReactiveLabelEnum {
     default = "DEFAULT"
 }
 export interface ReactiveLabelHint {
-    hint: ReactiveLabelEnum;
+    hint: ReactiveLabelEnum|string;
     message: string;
 
 }
 
-export const ReactiveLabel = ({ hint = "", message = "" }: { hint: ReactiveLabelEnum | string, message: string }) => {
+export const ReactiveLabel = ({ hint = "", message = "" }: ReactiveLabelHint) => {
     const processHint = (hint: string) => {
         switch (hint) {
             case "ERROR":
