@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo, useContext } from "react";
-import { AiFillDelete, AiFillEdit } from "react-icons/ai";
+import { useState, useEffect, useContext, useCallback } from "react";
+import { AiFillDelete } from "react-icons/ai";
 import { storeleadsDomainDataHelper } from "./ProximityHelper";
 import { CreateProximityContext } from "./CreateProximity";
 import { HandleAppsTechnology } from "./HandleAppsAndTechnology";
-import { deleteFromMutableArrayState, setToMutableArrayState } from "../../../sharedComponents/StateHelpers";
+import { deleteFromMutableState, setToMutableState } from "../../../sharedComponents/StateHelpers";
+import { RangeSelectorInput } from "./RangeSelectorInput";
 
 export const FieldSelecter = ({ domainData, selectedFieldValues, setSelectedFieldValues }) => {
 	// Domain Data contains data of domain fetched by API
@@ -13,7 +14,7 @@ export const FieldSelecter = ({ domainData, selectedFieldValues, setSelectedFiel
 
 
 	// details contains details fetched from domain through helper
-	const [details, setDetails] = useState({})
+	const [transformedDetails, setTransformedDetails] = useState({})
 	// selectedFields contains details that are selected through drop down
 	const [selectedFields, setSelectedFields] = useState([])
 	// Priority Details contains the details that are to be displayed permanantly
@@ -21,6 +22,7 @@ export const FieldSelecter = ({ domainData, selectedFieldValues, setSelectedFiel
 
 	//Some keys need to be handled with custom handler
 	const customHandleDetails = new Set(["technologies", "apps"])
+	const [customHandleDetailsFieldVals, setCustomHandleDetailsFieldVals] = useState({})
 	const [customHandleAppsTechVals, setCustomHandleAppsTechVals] = useState({})
 	const { editingMode } = useContext(CreateProximityContext)
 
@@ -38,25 +40,24 @@ export const FieldSelecter = ({ domainData, selectedFieldValues, setSelectedFiel
 
 		storeleadsDomainDataHelper(domainData)
 			.then(transformedData => {
-				setDetails(transformedData)
+				setTransformedDetails(transformedData)
 				if (transformedData && Object.keys(transformedData).length) {
 					let selected = Object.keys(transformedData).filter(key => !priorityDetails.has(key)
-						&& !customHandleDetails.has(key)
-						&& !!transformedData[key])
+						&& !customHandleDetails.has(key) && !!transformedData[key])
 					if (editingMode) {
 						selected = selected.filter(r => selectedFieldValues.hasOwnProperty(r))
 					}
 
-				        // set handle apps and tech if case they are set
-				    let customHandleDetailEdit = {}
-				    customHandleDetails.forEach(r=> {
-					if(selectedFieldValues[r]){
-					    customHandleDetailEdit[r] = selectedFieldValues[r]
-					}
-				    })
-				        
-				    setSelectedFields(selected)
-				    setCustomHandleAppsTechVals(customHandleDetailEdit)
+					// set handle apps and tech if case they are set
+					let customHandleDetailEdit = {}
+					customHandleDetails.forEach(r => {
+						if (selectedFieldValues[r]) {
+							customHandleDetailEdit[r] = selectedFieldValues[r]
+						}
+					})
+
+					setSelectedFields(selected)
+					setCustomHandleAppsTechVals(customHandleDetailEdit)
 				}
 			})
 
@@ -67,60 +68,45 @@ export const FieldSelecter = ({ domainData, selectedFieldValues, setSelectedFiel
 
 		// 
 
-		if (details && Object.keys(details).length) {
+		if (transformedDetails && Object.keys(transformedDetails).length) {
 			let data = {}
 
 
 
 			priorityDetails.forEach(val => {
-				if (details.hasOwnProperty(val)) {
-					data[val] = details[val]
+				if (transformedDetails.hasOwnProperty(val)) {
+					data[val] = transformedDetails[val]
 				}
 			})
 
 
 			selectedFields.forEach(val => {
-				if (details.hasOwnProperty(val)) {
-					data[val] = details[val]
+				if (transformedDetails.hasOwnProperty(val)) {
+					data[val] = transformedDetails[val]
+				}
+			})
+			selectedFields.forEach(val => {
+				if (customHandleDetailsFieldVals.hasOwnProperty(val)) {
+					data[val] = customHandleDetailsFieldVals[val]
 				}
 			})
 
-
-
-
 			setSelectedFieldValues({
 				...data,
-				...customHandleAppsTechVals
+				...customHandleAppsTechVals,
 			})
 
 		}
 
-	}, [details, selectedFields, customHandleAppsTechVals])
-
-	const insertDetail = (detailKey) => {
-		if (!detailKey)
-			return
-
-		if (selectedFields.includes(detailKey)) {
-			return
-		}
-
-		setSelectedFields(old => {
-			return [...old,
-				detailKey
-			]
-		})
-	}
-
-	const deleteDetail = (value) => {
-		setSelectedFields(old => {
-			let temp = old.filter(r => r !== value)
-			console.log(temp)
-			return [...temp]
-		})
-	}
+	}, [transformedDetails, selectedFields, customHandleAppsTechVals, customHandleDetailsFieldVals])
 
 
+
+
+	const rangeSelectorUpdateFunction = useCallback(
+		(min, max, propertyName) => setToMutableState({ [propertyName]: { min, max } }, customHandleDetailsFieldVals, setCustomHandleDetailsFieldVals),
+		[]
+	)
 
 	return (
 		<div>
@@ -131,10 +117,10 @@ export const FieldSelecter = ({ domainData, selectedFieldValues, setSelectedFiel
 					<div>
 						<select className="form-select mb-3" aria-label="Select Fetched Fields"
 							placeholder="Select Available Fields"
-							onBlur={(obj) => setToMutableArrayState(obj.target.value, selectedFields, setSelectedFields)}
-							onChange={(obj) => setToMutableArrayState(obj.target.value, selectedFields, setSelectedFields)}>
+							onBlur={(obj) => setToMutableState(obj.target.value, selectedFields, setSelectedFields)}
+							onChange={(obj) => setToMutableState(obj.target.value, selectedFields, setSelectedFields)}>
 							<option disabled selected>Selected Fetched Fields</option>
-							{Object.entries(details)
+							{Object.entries(transformedDetails)
 								.filter(([key, value]) => !priorityDetails.has(key) && !customHandleDetails.has(key))
 								.filter(([key, value]) => !!key && !!value)
 								.map(([key, value]) => (<option key={key} value={key}>{key}</option>
@@ -148,13 +134,13 @@ export const FieldSelecter = ({ domainData, selectedFieldValues, setSelectedFiel
 
 			<ul className="list-group mt-3">
 				{/* Display PriorityFields*/}
-				{Object.keys(details).length > 0 && [...priorityDetails].map(targetKey => {
-					let finValue = details[targetKey]
+				{Object.keys(transformedDetails).length > 0 && [...priorityDetails].map(targetKey => {
+					let finValue = transformedDetails[targetKey]
 					if (!finValue) {
 						return;
 					}
 					if (targetKey === 'categories') {
-						finValue = details[targetKey].join(" & ")
+						finValue = transformedDetails[targetKey].join(" & ")
 					}
 
 
@@ -169,23 +155,35 @@ export const FieldSelecter = ({ domainData, selectedFieldValues, setSelectedFiel
 					)
 				})}
 				{/* Display selected fields */}
-				{selectedFields.map((r, index) => (
-					<li key={index + 409} className="list-group-item d-flex justify-content-between align-items-start">
-						<div className="ms-2 me-auto overflow-auto">
-							<div className="fw-bold">{r}</div>
-							<div>{details[r]}</div>
+				{selectedFields.map((r, index) => {
 
-						</div>
-						<span className="btn p-0 mx-1 text-danger" onClick={(obj) => deleteFromMutableArrayState(r, selectedFields, setSelectedFields)}>
-							<AiFillDelete />
+					const innerValue = (r === "employee_count" || r === "estimated_sales") ?
+						(<RangeSelectorInput
+							inputName={r}
+							defaultValue={transformedDetails[r]}
+							range={{ min: selectedFieldValues[r]?.min, max: selectedFieldValues[r]?.max }}
+							 setRangeFunction={(mn,mx)=>rangeSelectorUpdateFunction(mn,mx,r)}
+						/>) :
+						(<div>{transformedDetails[r]}</div>)
 
-						</span>
-					</li>
+					return (
+						<li key={index + 409} className="list-group-item d-flex justify-content-between align-items-start">
+							<div className="ms-2 me-auto overflow-auto">
+								<div className="fw-bold">{r}</div>
+								{innerValue}
 
-				))}
+							</div>
+							<span className="btn p-0 mx-1 text-danger" onClick={(obj) => deleteFromMutableState(r, selectedFields, setSelectedFields)}>
+								<AiFillDelete />
+
+							</span>
+						</li>
+
+					)
+				})}
 				{
-					((!!details["apps"] && !!details["apps"].length) || (!!details["technologies"] && !!details["technologies"].length)) && (
-					    <HandleAppsTechnology details={details} fields={customHandleAppsTechVals} setFields={setCustomHandleAppsTechVals} />
+					((!!transformedDetails["apps"] && !!transformedDetails["apps"].length) || (!!transformedDetails["technologies"] && !!transformedDetails["technologies"].length)) && (
+						<HandleAppsTechnology details={transformedDetails} fields={customHandleAppsTechVals} setFields={setCustomHandleAppsTechVals} />
 					)
 				}
 			</ul>

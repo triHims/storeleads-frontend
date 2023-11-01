@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext} from "react";
 import { Modal } from "react-bootstrap";
 import { AiFillEdit } from "react-icons/ai";
-import { deleteFromMutableArrayState, setToMutableArrayState } from "../../../sharedComponents/StateHelpers";
+import { deleteFromMutableState, setToMutableState } from "../../../sharedComponents/StateHelpers";
 import styles from "../../mainscreen.module.css";
 import { CreateProximityContext } from "./CreateProximity";
 
@@ -83,9 +83,9 @@ export const HandleAppsTechnology = ({ details, fields,setFields }) => {
 									<input className="form-check-input" type="checkbox" value="" id={`flexCheckApp${index}`}
 										onChange={(event) => {
 											if (event.target.checked) {
-												setToMutableArrayState(items, appsList, setAppsList)
+												setToMutableState(items, appsList, setAppsList)
 											} else {
-												deleteFromMutableArrayState(items, appsList, setAppsList)
+												deleteFromMutableState(items, appsList, setAppsList)
 											}
 										}}
 										checked={appsList.includes(items)}
@@ -108,9 +108,9 @@ export const HandleAppsTechnology = ({ details, fields,setFields }) => {
 									onChange={(event) => {
 										console.log(event.target.checked)
 										if (event.target.checked) {
-											setToMutableArrayState(items, technologiesList, setTechnologiesList)
+											setToMutableState(items, technologiesList, setTechnologiesList)
 										} else {
-											deleteFromMutableArrayState(items, technologiesList, setTechnologiesList)
+											deleteFromMutableState(items, technologiesList, setTechnologiesList)
 										}
 									}}
 									checked={technologiesList.includes(items)}

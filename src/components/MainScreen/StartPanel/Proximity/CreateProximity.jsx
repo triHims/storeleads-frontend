@@ -12,7 +12,7 @@ import { PreviewDomain } from "./PreviewDomain"
 import { reverseTransformStoreleadsFilters, verifyEmailIds } from "../../../utils/HelperFunctions";
 
 
-export const CreateProximityContext = createContext({})
+export const CreateProximityContext = createContext({editingMode:null})
 const CreateProximity = ({ editingMode }) => {
 	const [domainName, bindDomainName, resetDomainName, setDomainName] = useInput("");
 	const [keywordInput, bindKeywordInput, resetKeywordInput, setKeywordInput] = useInput("");
@@ -59,19 +59,11 @@ const CreateProximity = ({ editingMode }) => {
 		// Requirement set all the fields as soon as the data is fetched
 		getDomainData(searchName)
 			.then(r => setDomainData(r.data))
-			.then(r => alert("Domain Data Fetched"))
-			.catch(e => alert("Unable to Fetch Data"))
+			.then(_ => alert("Domain Data Fetched"))
+			.catch(_ => alert("Unable to Fetch Data"))
 			.finally(() => setIsFetchButtonLoading(false))
 	}
 
-	const isSavePossible = () => {
-	    alert()
-		return (
-			labelJobNameVerify?.hint === ReactiveLabelEnum.success &&
-			labelEmailIdVerify?.hint == ReactiveLabelEnum.success
-		    
-		);
-	};
 
 	const isUpdatePossible = () => {
 		return (
@@ -82,7 +74,7 @@ const CreateProximity = ({ editingMode }) => {
 
 	const saveData = () => {
 		setLabelSaveMessage({ hint: "", message: "Creating Job..." });
-		saveProximityJob(domainName, jobName, emailIds, personaList, { ...selectedDomainAttributes, "keyword": keywordInput }).then(r => {
+		saveProximityJob(domainName, jobName, emailIds, personaList, { ...selectedDomainAttributes, "keyword": keywordInput }).then(() => {
 			setLabelSaveMessage({
 				hint: ReactiveLabelEnum.success,
 				message: "Job successfully created",
@@ -107,7 +99,7 @@ const CreateProximity = ({ editingMode }) => {
 
 	const updateData = () => {
 		setLabelSaveMessage({ hint: "", message: "Update Job..." });
-		updateProximityJob(jobData._id, emailIds, personaList, { ...selectedDomainAttributes, "keyword": keywordInput }).then(r => {
+		updateProximityJob(jobData._id, emailIds, personaList, { ...selectedDomainAttributes, "keyword": keywordInput }).then(() => {
 			setLabelSaveMessage({
 				hint: ReactiveLabelEnum.success,
 				message: "Job successfully updated",
