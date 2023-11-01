@@ -249,7 +249,6 @@ const CreateProximity = ({ editingMode }) => {
 											    <span className="visually-hidden">Loading...</span>
 										    </div>
 									    ) : "Fetch Data"}
-    .
 								    </button>
 							    </div>
 						    }

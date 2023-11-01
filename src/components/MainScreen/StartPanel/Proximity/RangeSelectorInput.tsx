@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useInput } from "../../../../hooks/useInput";
+import { getOrDefault } from "../../../utils/HelperFunctions";
 
 export interface Range {
   min: number | undefined;
@@ -21,9 +22,7 @@ export function RangeSelectorInput({
   const [maxValue, bindMaxValue, resetMaxValue, setMaxValue] = useInput(0);
 
   useEffect(() => {
-    if (range?.max) {
-      setMaxValue(range.max);
-    }
+    setMaxValue(getOrDefault(range?.max,defaultValue));
   }, []);
 
   useEffect(() => {
@@ -39,7 +38,7 @@ export function RangeSelectorInput({
       <div className="d-flex justify-content-start">
         <span>
           <div>
-            <label className="fs-6 fst-italic">Selected Max Value</label>
+            <label className="fs-6 fst-italic">Selected Min Value</label>
             <input
               {...bindMinValue}
               type="text"
@@ -51,7 +50,7 @@ export function RangeSelectorInput({
           </div>
         </span>
         <span className="ms-2">
-          <label className="fs-6 fst-italic">Selected Min Value</label>
+          <label className="fs-6 fst-italic">Selected Max Value</label>
           <input
             {...bindMaxValue}
             type="text"
