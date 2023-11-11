@@ -29,3 +29,7 @@
 .redColor {
 	color: red,
 }
+
+.mini_text {
+    font-size: 0.75em;
+}

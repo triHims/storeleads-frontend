@@ -8,6 +8,7 @@ import {
 } from "../../../sharedComponents/StateHelpers";
 import { RangeSelectorInput, RangeCompType } from "./RangeSelectorInput";
 import { useCreateProximityProvider } from "../../../sharedComponents/contexts/CreateProximityContext";
+import styles from "../../mainscreen.module.css";
 
 export const FieldSelecter = ({
   domainData,
@@ -191,7 +192,7 @@ export const FieldSelecter = ({
                 }
                 inputName={r}
                 defaultValue={transformedDetails[r]}
-		defaultRange={{ min:0,max:transformedDetails[r] }}
+                defaultRange={{ min: 0, max: transformedDetails[r] }}
                 range={{
                   min: proximityFieldValues[r]?.min,
                   max: proximityFieldValues[r]?.max,
@@ -208,13 +209,27 @@ export const FieldSelecter = ({
               <div>{transformedDetails[r]}</div>
             );
 
+          let customHeading = r;
+          if (r === "estimated_sales") {
+            customHeading = (
+              <>
+                <span>{r}</span>{" "}
+                <span
+                  className={"ms-2 text-danger fw-lighter " + styles.mini_text}
+                >
+                  USD/mo
+                </span>
+              </>
+            );
+          }
+
           return (
             <li
               key={index + 409}
               className="list-group-item d-flex justify-content-between align-items-start"
             >
               <div className="ms-2 me-auto overflow-auto">
-                <div className="fw-bold">{r}</div>
+                <div className="fw-bold">{customHeading}</div>
                 {innerWidget}
               </div>
               <span
