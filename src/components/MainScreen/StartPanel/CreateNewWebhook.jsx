@@ -8,10 +8,10 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import AutoModalNormal from "../../sharedComponents/AutoModalNormal";
 import { AiFillDelete } from "react-icons/ai";
 import { TiCancelOutline } from "react-icons/ti";
-import { MainScreenContext } from "../MainScreen";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { BACKEND_BASE_PATH, BACKEND_WEBHOOK_PREFIX } from "../../utils/Constants";
+import { useMainScreenContext } from "../../sharedComponents/contexts/MainScreenContext";
 
 const tableFontColor = {
 	color: "black",
@@ -50,9 +50,9 @@ const DeleteFlow = ({ showDelete, setShowDelete, jobData }) => {
 	const navigate = useNavigate();
 	const [waiting, setWaiting] = useState(false);
 	const header = <span style={tableFontColor}>Delete Job</span>;
-	const { setrefresh } = useContext(MainScreenContext); // Refresh Main Screen
+	const { doRefresh } = useMainScreenContext(); // Refresh Main Screen
 	const closeAndRefresh = () => {
-		setrefresh();
+		doRefresh();
 		setTimeout(() => {
 			navigate("/");
 		}, 1000);
@@ -203,7 +203,7 @@ async function updateJobsData(jobId, persona, email_id_list,minimum_traffic_coun
 const CreateNewWorkflow = ({ editingMode }) => {
 	/* react router stuff */
 	const jobData = useLoaderData();
-	const { setrefresh } = useContext(MainScreenContext); // Refresh Main Screen
+	const { doRefresh } = useMainScreenContext(); // Refresh Main Screen
 
 	useEffect(() => {
 		if (editingMode) {
@@ -228,7 +228,7 @@ const CreateNewWorkflow = ({ editingMode }) => {
 			setJobName("");
 			setEmailIds("")
 		}
-		setrefresh();
+		doRefresh();
 	}, [editingMode, jobData]);
 
 	const [personaList, bindPersonaList, resetPersonaList, setPersonaList] =
@@ -387,7 +387,7 @@ const CreateNewWorkflow = ({ editingMode }) => {
 		resetJobName();
 		resetPersonaList();
 		resetEmailIds()
-		setrefresh();
+		doRefresh();
 	};
 	const updateData = async () => {
 		setLabelSaveMessage({ hint: "", message: "Updating Job..." });

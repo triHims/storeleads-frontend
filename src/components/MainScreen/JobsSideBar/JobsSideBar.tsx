@@ -10,12 +10,12 @@ import { AiFillDelete } from "react-icons/ai";
 import { MdCreateNewFolder } from "react-icons/md";
 import { TbWebhook } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
-import { MainScreenContext } from "../MainScreen";
 import { AiFillHome } from "react-icons/ai";
 import { Tab, Tabs } from "react-bootstrap";
 import { ROUTER_WORKFLOW_CREATE, ROUTER_JOBS_CREATE, ROUTER_WORKFLOW_EDIT, ROUTER_WORKFLOW_HISTORY, ROUTER_PROXIMITY_HISTORY, ROUTER_PROXIMITY_EDIT, ENABLE_JOBS_COMPONENT } from "../../utils/Constants";
 import { UserCard } from "./UserCard/UserCard";
 import AutoModalNormal from "../../sharedComponents/AutoModalNormal"
+import { useMainScreenContext } from "../../sharedComponents/contexts/MainScreenContext";
 
 
 const localStyles = {
@@ -33,10 +33,10 @@ async function deleteProximity(jobId, setWaiting, successCallBack) {
 		response = await proximityJobApi.deleteProximityJobByIdProximityIdDelete(jobId);
 		console.log("response");
 		alert("Job is deleted");
-	  setWaiting?.(false)
+		setWaiting?.(false)
 		successCallBack();
 	} catch (e) {
-	  setWaiting?.(false)
+		setWaiting?.(false)
 		console.log(e);
 		let errorRes = processError(e);
 		console.error(errorRes);
@@ -90,68 +90,68 @@ async function getAllJobs() {
 
 	return response;
 }
-const populateProximityJobs = async (setList,setShowDelete,setDeletedDetails, navigateHandle) => {
+const populateProximityJobs = async (setList, setShowDelete, setDeletedDetails, navigateHandle) => {
 	let jobs = await getAllProximity();
 
-  let locJobList = jobs.map((r,index) => (
+	let locJobList = jobs.map((r, index) => (
 		<div
 			key={r.jobName}
-	  className={ `${styles.custom__accordion}  accordion-item` }
+			className={`${styles.custom__accordion}  accordion-item`}
 		>
-	    <h2 className="accordion-header">
-			<OverlayTrigger
-				placement="right"
-				delay={{ show: 250, hide: 400 }}
-				overlay={<Tooltip id={`job-tooltip-${r.id} `}>{r.jobName}</Tooltip>}
-			>
-	    <button className={ `accordion-button ${styles.custom__accordion_button}` } type="button" data-bs-toggle="collapse" data-bs-target={ `#collapse${index}` } aria-expanded="false" aria-controls={ `collapse${index}` }>
-				    <div className={styles.noOverFlowText}>{r.jobName}</div>
-				</button>
-			</OverlayTrigger>
-	    </h2>
-	    <div id={ `collapse${index}` } className="accordion-collapse collapse">
-		<div className="accordion-body d-flex justify-content-evenly">
-
-			<div className="mh-2 ">
-				<button
-					type="button"
-					className="btn btn-dark p-1 lh-1"
-					onClick={() => {
-						// Webhook History
-						navigateHandle(ROUTER_PROXIMITY_HISTORY + "/" + r._id);
-					}}
+			<h2 className="accordion-header">
+				<OverlayTrigger
+					placement="right"
+					delay={{ show: 250, hide: 400 }}
+					overlay={<Tooltip id={`job-tooltip-${r.id} `}>{r.jobName}</Tooltip>}
 				>
-					<FaHistory />
-				</button>
-			</div>
-			<div className="me-2 ms-1">
-				<button
-					type="button"
-					className="btn btn-dark p-1 d-block lh-1"
-					onClick={() => {
-						navigateHandle(ROUTER_PROXIMITY_EDIT + "/" + r._id);
-					}}
-				>
-					<RiEditBoxLine />
-				</button>
-			</div>
-			<div className="me-2 ms-1">
-				<button
-					type="button"
-					className="btn btn-dark p-1 d-block lh-1"
-					onClick={() => {
-					  setDeletedDetails(r)
-					  setShowDelete(true)
+					<button className={`accordion-button ${styles.custom__accordion_button}`} type="button" data-bs-toggle="collapse" data-bs-target={`#collapse${index}`} aria-expanded="false" aria-controls={`collapse${index}`}>
+						<div className={styles.noOverFlowText}>{r.jobName}</div>
+					</button>
+				</OverlayTrigger>
+			</h2>
+			<div id={`collapse${index}`} className="accordion-collapse collapse">
+				<div className="accordion-body d-flex justify-content-evenly">
 
-					}}
-				>
-					<AiFillDelete />
-				</button>
-			</div>
+					<div className="mh-2 ">
+						<button
+							type="button"
+							className="btn btn-dark p-1 lh-1"
+							onClick={() => {
+								// Webhook History
+								navigateHandle(ROUTER_PROXIMITY_HISTORY + "/" + r._id);
+							}}
+						>
+							<FaHistory />
+						</button>
+					</div>
+					<div className="me-2 ms-1">
+						<button
+							type="button"
+							className="btn btn-dark p-1 d-block lh-1"
+							onClick={() => {
+								navigateHandle(ROUTER_PROXIMITY_EDIT + "/" + r._id);
+							}}
+						>
+							<RiEditBoxLine />
+						</button>
+					</div>
+					<div className="me-2 ms-1">
+						<button
+							type="button"
+							className="btn btn-dark p-1 d-block lh-1"
+							onClick={() => {
+								setDeletedDetails(r)
+								setShowDelete(true)
 
+							}}
+						>
+							<AiFillDelete />
+						</button>
+					</div>
+
+				</div>
+			</div>
 		</div>
-	    </div>
-	    </div>
 
 
 	));
@@ -254,64 +254,64 @@ const getHeight = () => {
 }
 const SideBarDataBuilder = ({ dataType }) => {
 	const [jobsList, setJobList] = useState([]);
-	const [showDelete,setShowDelete] = useState(false)
-	const [deletedDetails,setDeletedDetails] = useState<any>({})
-	const [waiting,setWaiting] = useState(false)
+	const [showDelete, setShowDelete] = useState(false)
+	const [deletedDetails, setDeletedDetails] = useState<any>({})
+	const [waiting, setWaiting] = useState(false)
 	let navigate = useNavigate();
 
-  const { refresh,setrefresh } = useContext(MainScreenContext);
+	const { refresh, doRefresh } = useMainScreenContext()
 	const closeAndRefresh = () => {
-	  setWaiting(false)
+		setWaiting(false)
 		setTimeout(() => {
-		  setShowDelete(false)
+			setShowDelete(false)
 		}, 1000);
-	  setrefresh();
+		doRefresh();
 	};
 	useEffect(() => {
 		if (dataType === "WEBHOOKS")
 			populateWebhookJobs(setJobList, navigate)
 		else if (dataType === "PROXIMITY")
-		  populateProximityJobs(setJobList,setShowDelete,setDeletedDetails, navigate)
+			populateProximityJobs(setJobList, setShowDelete, setDeletedDetails, navigate)
 		else
 			populateJobs(setJobList, navigate);
 	}, [refresh]);
 
-  return (<>
-    <div className="scrollBar accordion accordion-flush"
-	  style={{minHeight:"0px",maxHeight:getHeight(),overflowX:"hidden",overflowY:"auto"}}>
-    {jobsList}
-	  </div>
-	  {
-	    dataType=== "PROXIMITY" &&
-	      (<AutoModalNormal modalState={showDelete} setModalState={setShowDelete} header= {<span className={styles.color_black}>Delete Job</span>} >
-			<div className={styles.color_black}>
-				Do you want to delete the job- <b>{deletedDetails.jobName}</b> ?
-			</div>
-			{!waiting ? (
-				<div className="d-flex flex-row justify-content-end">
-					<button
-						type="button"
-						onClick={() => deleteProximity(deletedDetails._id, setWaiting, closeAndRefresh)}
-						className="btn btn-outline-danger py-1 px-2 mx-2"
-					>
-						<AiFillDelete />
-					</button>
-					<button
-						type="button"
-						className="btn btn-outline-secondary py-1 px-2"
-						onClick={() => setShowDelete(false)}
-					>
-						<TiCancelOutline />
-					</button>
+	return (<>
+		<div className="scrollBar accordion accordion-flush"
+			style={{ minHeight: "0px", maxHeight: getHeight(), overflowX: "hidden", overflowY: "auto" }}>
+			{jobsList}
+		</div>
+		{
+			dataType === "PROXIMITY" &&
+			(<AutoModalNormal modalState={showDelete} setModalState={setShowDelete} header={<span className={styles.color_black}>Delete Job</span>} >
+				<div className={styles.color_black}>
+					Do you want to delete the job- <b>{deletedDetails.jobName}</b> ?
 				</div>
-			) : (
-				<div className="spinner-border text-danger" role="status">
-					<span className="visually-hidden">Loading...</span>
-				</div>
-			)}
-		</AutoModalNormal>)
-	  }
-	  </>);
+				{!waiting ? (
+					<div className="d-flex flex-row justify-content-end">
+						<button
+							type="button"
+							onClick={() => deleteProximity(deletedDetails._id, setWaiting, closeAndRefresh)}
+							className="btn btn-outline-danger py-1 px-2 mx-2"
+						>
+							<AiFillDelete />
+						</button>
+						<button
+							type="button"
+							className="btn btn-outline-secondary py-1 px-2"
+							onClick={() => setShowDelete(false)}
+						>
+							<TiCancelOutline />
+						</button>
+					</div>
+				) : (
+					<div className="spinner-border text-danger" role="status">
+						<span className="visually-hidden">Loading...</span>
+					</div>
+				)}
+			</AutoModalNormal>)
+		}
+	</>);
 };
 
 const CreateWorkflowButton = () => {
@@ -411,9 +411,9 @@ const JobsSideBar = () => {
 							className="mb-3"
 							fill
 						>
-						{ENABLE_JOBS_COMPONENT && (<Tab eventKey="job" title="Jobs">
+							{ENABLE_JOBS_COMPONENT && (<Tab eventKey="job" title="Jobs">
 								<JobsViewSide />
-						</Tab>)}
+							</Tab>)}
 
 							<Tab eventKey="webhook" title="Webhook">
 								<WebhooksViewSide />

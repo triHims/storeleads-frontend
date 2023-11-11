@@ -86,6 +86,24 @@ export function getOrDefault(obj,defaultValue){
   return obj
 }
 
+export function getOrDefaultArray(obj,defaultValue){
+  if(obj===null || obj===undefined || !Array.isArray(obj)){
+    return defaultValue
+  }
+  return obj
+
+}
+
+
+export function getOrDefaultString(obj:any,defaultValue:string):string{
+  if(obj===null || obj===undefined || (typeof obj !== 'string' && !( obj instanceof String ))){
+    return defaultValue
+  }
+  return obj
+
+}
+
+
 export function reverseTransformStoreleadsFilters(outputDict) {
   const inputDict: Record<string, any> = {};
 
@@ -133,5 +151,22 @@ export function isTrue(obj: any) {
     return !!obj.length;
   } else {
     return !!obj;
+  }
+}
+
+
+export function numberStripComma(val:string|null){
+  if( typeof val === 'string'){
+    return parseInt(val.replaceAll(",",""));
+  }
+  return null;
+}
+
+export function debounceFn(func, wait) {
+  let timeout
+  return function(...args) {
+    const context = this
+    clearTimeout(timeout)
+    timeout = setTimeout(() => func.apply(context, args), wait)
   }
 }

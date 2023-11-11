@@ -3,8 +3,8 @@ import JobsSideBar from "./JobsSideBar/JobsSideBar";
 import { Outlet, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../Auth/AuthProvider";
+import { MainScreenContextProvider } from "../sharedComponents/contexts/MainScreenContext";
 
-export const MainScreenContext = React.createContext(null);
 const MainScreenContainer = () => {
   return (
     <div className="container-fluid">
@@ -20,44 +20,42 @@ const MainScreenContainer = () => {
   );
 };
 export const MainScreen = () => {
-  const [refresh, setrefresh] = useState(0);
-    const [isLoading,setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
-    const { user,revalidateLogin } = useAuth();
+  const { user, revalidateLogin } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
-    
-      setIsLoading(true)
+    setIsLoading(true);
     if (!user) {
-      setIsLoading(false)
+      setIsLoading(false);
       navigate("/auth/login");
-    }else{
-	revalidateLogin()
-	    .then(_=>{
-		setIsLoading(false)
-	    })
-	    .catch(_=>{
-	    setIsLoading(false)
-	    navigate("/auth/login");
-	})
+    } else {
+      revalidateLogin()
+        .then((_) => {
+          setIsLoading(false);
+        })
+        .catch((_) => {
+          setIsLoading(false);
+          navigate("/auth/login");
+        });
     }
   }, [user]);
 
   return (
-    <MainScreenContext.Provider
-      value={{ refresh, setrefresh: () => setrefresh((r) => r + 1) }}
-    >
-
-	{ isLoading?(
-	    <div style={{alignSelf:"center"}}>
-		<div className="spinner-grow text-primary" style={{width:"3rem", height: "3rem"}} role="status">
-		    <span className="visually-hidden">Loading...</span>
-		</div>
-	    </div>
-	):(
-	    <MainScreenContainer />
-	)
-	}
-    </MainScreenContext.Provider>
+    <MainScreenContextProvider>
+      {isLoading ? (
+        <div style={{ alignSelf: "center" }}>
+          <div
+            className="spinner-grow text-primary"
+            style={{ width: "3rem", height: "3rem" }}
+            role="status"
+          >
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      ) : (
+        <MainScreenContainer />
+      )}
+    </MainScreenContextProvider>
   );
 };

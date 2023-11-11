@@ -11,7 +11,7 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import AutoModalNormal from "../../sharedComponents/AutoModalNormal";
 import { AiFillDelete } from "react-icons/ai";
 import { TiCancelOutline } from "react-icons/ti";
-import { MainScreenContext } from "../MainScreen";
+import { useMainScreenContext } from "../../sharedComponents/contexts/MainScreenContext";
 
 const tableFontColor = {
 	color: "black",
@@ -47,9 +47,9 @@ const DeleteFlow = ({ showDelete, setShowDelete, jobData }) => {
 	const navigate = useNavigate();
 	const [waiting, setWaiting] = useState(false);
 	const header = <span style={tableFontColor}>Delete Job</span>;
-	const { setrefresh } = useContext(MainScreenContext); // Refresh Main Screen
+	const { doRefresh } = useMainScreenContext(); // Refresh Main Screen
 	const closeAndRefresh = () => {
-		setrefresh();
+		doRefresh();
 		setTimeout(() => {
 			navigate("/");
 		}, 1000);
@@ -144,7 +144,7 @@ async function updateJobsData(jobId, jobName, storeLeadsUrl, persona, email_id_l
 const CreateNewFlow = ({ editingMode }) => {
 	/* react router stuff */
 	const jobData = useLoaderData();
-	const { setrefresh } = useContext(MainScreenContext); // Refresh Main Screen
+	const { doRefresh } = useMainScreenContext(); // Refresh Main Screen
 
 	useEffect(() => {
 		if (editingMode) {
@@ -166,7 +166,7 @@ const CreateNewFlow = ({ editingMode }) => {
 			setJobName("");
 			setEmailIds("")
 		}
-		setrefresh();
+		doRefresh();
 	}, [editingMode, jobData]);
 
 	/* component stuff */
@@ -320,7 +320,7 @@ const CreateNewFlow = ({ editingMode }) => {
 		resetJobName();
 		resetStoreLeads();
 		resetPersonaList();
-		setrefresh();
+		doRefresh();
 	};
 	const updateData = async () => {
 		setLabelSaveMessage({ hint: "", message: "Updating Job..." });

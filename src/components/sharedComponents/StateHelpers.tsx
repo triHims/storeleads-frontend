@@ -30,7 +30,6 @@ export function setToMutableState(value:any, hook:any, setHook:(arg0:any|any[]|u
 }
 
 export function deleteFromMutableState(value:any[], hook:any, setHook:(arg0:any|any[]|undefined)=>void) {
-  console.log("Delete Called from inside")
 	if (!value || !setHook)
 		return
 	if (Array.isArray(hook)) {
