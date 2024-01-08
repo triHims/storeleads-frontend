@@ -24,11 +24,18 @@ type RangeSelectInputType = {
   setRangeFunction: (newMin: number, newMax: number) => void;
 };
 
+function round(num, decimalPlaces = 0) {
+    num = Math.round(num + "e" + decimalPlaces);
+    return Number(num + "e" + -decimalPlaces);
+}
 function shiftToDecimalPlace(num: number, place: number) {
   if (place > 0 || place < 0) return num * Math.pow(10, place);
   else return num;
 }
 
+function shiftToDecimalPlacePercision2(num: number, place: number) {
+  return round(shiftToDecimalPlace(num,place),2)
+}
 /**
 * RangeSelectorInput
 * 
@@ -49,17 +56,17 @@ export function RangeSelectorInput({
 }: RangeSelectInputType) {
 
   const valState = {
-    min: shiftToDecimalPlace(
+    min: shiftToDecimalPlacePercision2(
       getOrDefault(range?.min, defaultRange.min),
       compType === RangeCompType.FLOAT ? -2 : 0
     ),
-    max: shiftToDecimalPlace(
+    max: shiftToDecimalPlacePercision2(
       getOrDefault(range?.max, defaultRange.max),
       compType === RangeCompType.FLOAT ? -2 : 0
     ),
   };
 
-  let formattedDefaultValue = shiftToDecimalPlace(
+  let formattedDefaultValue = shiftToDecimalPlacePercision2(
     getOrDefault(defaultValue, 0),
     compType === RangeCompType.FLOAT ? -2 : 0
   );
@@ -69,12 +76,12 @@ export function RangeSelectorInput({
 
   const setMinValue = (val) => {
     val = getOrDefault(val, 0);
-    val = shiftToDecimalPlace(val, compType === RangeCompType.FLOAT ? 2 : 0);
+    val = shiftToDecimalPlacePercision2(val, compType === RangeCompType.FLOAT ? 2 : 0);
     setRangeFunction(val, range?.max);
   };
   const setMaxValue = (val) => {
     val = getOrDefault(val, 0);
-    val = shiftToDecimalPlace(val, compType === RangeCompType.FLOAT ? 2 : 0);
+    val = shiftToDecimalPlacePercision2(val, compType === RangeCompType.FLOAT ? 2 : 0);
     setRangeFunction(range?.min, val);
   };
 
