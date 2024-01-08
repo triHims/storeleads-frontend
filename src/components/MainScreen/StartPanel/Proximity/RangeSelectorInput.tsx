@@ -29,6 +29,16 @@ function shiftToDecimalPlace(num: number, place: number) {
   else return num;
 }
 
+/**
+* RangeSelectorInput
+* 
+*  compType, - Controls weather ranges are either Float or Integer, (Not both Currently)
+*  inputName,- Name to be used in the input
+*  defaultValue, - Value to be shown in the default value column
+*  defaultRange, - Values to be set as default in min and max range input boxes if range is null or not defined
+*  range, - Current value of ranges(Most likely a state somewhere)
+*  setRangeFunction,  - Used to set the state ; State is a composite of min and max
+*/
 export function RangeSelectorInput({
   compType,
   inputName,
@@ -37,6 +47,7 @@ export function RangeSelectorInput({
   range,
   setRangeFunction,
 }: RangeSelectInputType) {
+
   const valState = {
     min: shiftToDecimalPlace(
       getOrDefault(range?.min, defaultRange.min),

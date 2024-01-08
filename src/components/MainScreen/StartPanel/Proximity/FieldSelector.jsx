@@ -72,8 +72,10 @@ export const FieldSelecter = ({
 
   const updateProximityValues = (currentSelectedFields) => {
     //Fields in selectedFields but not in proximity
+    //RequiredFields<Local here no global definitions apply> are the fields that should be added
+    // toBeRemovedFields Should be removed in next iteration
 
-    const requiredFields = currentSelectedFields.filter(
+    const toBeAddedFields = currentSelectedFields.filter(
       (field) => !proximityFieldValues.hasOwnProperty(field)
     );
     const toBeRemovedFields = Object.keys(proximityFieldValues).filter(
@@ -81,7 +83,7 @@ export const FieldSelecter = ({
     );
 
     if (transformedDetails && Object.keys(transformedDetails).length) {
-      let data = {};
+      let data = {...proximityFieldValues};
 
       priorityDetails.forEach((val) => {
         if (transformedDetails.hasOwnProperty(val)) {
@@ -89,7 +91,7 @@ export const FieldSelecter = ({
         }
       });
 
-      requiredFields.forEach((val) => {
+      toBeAddedFields.forEach((val) => {
         if (transformedDetails.hasOwnProperty(val)) {
           data[val] = transformedDetails[val];
         }
